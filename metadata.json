@@ -1,0 +1,6 @@
+{
+  "name": "Vunex Markets",
+  "description": "Professional high-frequency trading platform landing page with real-time markets, lightning fast execution, and institutional liquidity.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
