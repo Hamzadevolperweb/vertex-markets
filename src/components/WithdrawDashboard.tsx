@@ -26,7 +26,8 @@ import {
   CreditCard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import heroBullImg from '../assets/images/vertex_hero_bull_1784320384594.jpg';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
+import heroBullImg from '../assets/images/cutouts/bull.png';
 
 interface WithdrawDashboardProps {
   onLogout: () => void;
@@ -269,17 +270,13 @@ export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDash
           
           {/* Logo with clean Sharp Chevron V */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate('Overview')}>
-            <div className="w-8 h-8 rounded-lg bg-white/[0.02] border border-white/10 flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-blue-500/10 rounded blur-sm" />
-              <svg className="w-5 h-5 text-white relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
-              </svg>
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center relative">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
             </div>
             
             <div className="flex flex-col text-left">
-              <span className="font-sans font-black text-sm tracking-[0.15em] text-white uppercase leading-none">Vertex</span>
-              <span className="font-sans text-[7px] tracking-[0.3em] text-gray-500 uppercase leading-none mt-1">Markets</span>
+              <span className="font-sans font-black text-sm tracking-[0.15em] text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[7px] tracking-[0.3em] text-gray-500 uppercase leading-none mt-1">Market</span>
             </div>
           </div>
 
@@ -601,15 +598,15 @@ export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDash
             <div className="rounded-xl border border-white/[0.08] bg-[#07070a] p-4 relative overflow-hidden flex flex-col justify-between h-44 shadow-lg">
               <div className="text-left select-none">
                 <h4 className="text-[11px] font-black text-white tracking-wide uppercase">Trade Smarter.</h4>
-                <p className="text-[10px] font-bold text-[#1e60ff] uppercase mt-0.5">Trade Vertex.</p>
+                <p className="text-[10px] font-bold text-[#1e60ff] uppercase mt-0.5">Trade Vunex.</p>
               </div>
               
               {/* High-fidelity Chrome Bull image at the bottom */}
               <div className="relative w-full h-24 mt-2 rounded-lg overflow-hidden border border-white/[0.05]">
                 <img 
                   src={heroBullImg} 
-                  alt="Vertex Bull" 
-                  className="w-full h-full object-cover object-center scale-110" 
+                  alt="Vunex Bull" 
+                  className="w-full h-full object-contain object-center scale-105 p-1" 
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
@@ -617,7 +614,7 @@ export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDash
             </div>
 
             <button 
-              onClick={() => triggerToast("You are already upgraded to the premium Vertex Pro Tier.", "success")}
+              onClick={() => triggerToast("You are already upgraded to the premium Vunex Pro Tier.", "success")}
               className="w-full py-2.5 px-4 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] rounded-xl text-[10px] font-extrabold text-white uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer group"
             >
               <span>Upgrade to Pro</span>
@@ -939,8 +936,8 @@ export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDash
                   <div className="relative w-full h-32 rounded-xl overflow-hidden border border-white/[0.05] select-none shadow-md">
                     <img 
                       src={heroBullImg} 
-                      alt="Vertex Chrome Bull" 
-                      className="w-full h-full object-cover object-center scale-105" 
+                      alt="Vunex Chrome Bull" 
+                      className="w-full h-full object-contain object-center p-2" 
                       referrerPolicy="no-referrer"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />

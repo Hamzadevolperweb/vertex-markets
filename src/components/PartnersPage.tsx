@@ -305,7 +305,7 @@ export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#0c0c0e_1px,transparent_1px),linear-gradient(to_bottom,#0c0c0e_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-35" />
 
       {/* 1. HERO HEADER SECTION */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-12 lg:pt-16">
+      <div className="relative w-full px-6 lg:px-10 xl:px-14 pt-10 pb-12 lg:pt-16">
         <div className="grid lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Text Column */}
@@ -336,7 +336,7 @@ export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-gray-400 text-base sm:text-lg font-sans leading-relaxed max-w-md"
             >
-              Partner with Vunex Markets and grow your business with global reach.
+              Partner with Vunex Market and grow your business with global reach.
             </motion.p>
 
             <motion.div 
@@ -400,7 +400,7 @@ export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
       </div>
 
       {/* 2. THE SIX MAIN PARTNER CARDS GRID */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="w-full px-6 lg:px-10 xl:px-14 py-16">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
             Tailored Partner Programs
@@ -499,7 +499,7 @@ export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
       </div>
 
       {/* 3. THE FIVE SMALLER CARD GRID (Interactive detail widgets) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-white/[0.03]">
+      <div className="w-full px-6 lg:px-10 xl:px-14 py-10 border-t border-white/[0.03]">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {secondaryCards.map((card) => {
             const isCalcCard = card.id === 'calculator';
@@ -703,7 +703,7 @@ export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
       </div>
 
       {/* 5. BOTTOM CTA BANNER WITH HOLOGRAM CHANNELS PEDESTAL */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative">
+      <div className="w-full px-6 lg:px-10 xl:px-14 py-10 relative">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -834,7 +834,7 @@ export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
       </div>
 
       {/* 6. TRUSTED REGULATORY BAR AT THE BOTTOM (EXACTLY MATCHING IMAGE THEME) */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-white/[0.04] mt-8 text-center">
+      <div className="w-full px-6 lg:px-10 xl:px-14 py-10 border-t border-white/[0.04] mt-8 text-center">
         
         {/* Regulatory logos array */}
         <div className="flex flex-wrap items-center justify-center gap-12 md:gap-16 lg:gap-24 opacity-75 grayscale hover:grayscale-0 transition-all duration-500 py-6">

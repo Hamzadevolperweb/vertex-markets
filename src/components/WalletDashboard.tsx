@@ -35,6 +35,8 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
+import bullAsset from '../assets/images/cutouts/bull.png';
 
 interface WalletDashboardProps {
   onLogout: () => void;
@@ -215,16 +217,12 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
         {/* Left: Brand Identity */}
         <div className="flex items-center gap-10">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => onNavigate('Overview')}>
-            <div className="relative w-7 h-7 flex items-center justify-center">
-              <span className="absolute inset-0 bg-blue-500/20 rounded blur-[2px]"></span>
-              <svg className="w-5 h-5 text-white relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"/>
-              </svg>
+            <div className="relative w-7 h-7 flex items-center justify-center rounded overflow-hidden">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col text-left">
-              <span className="font-display font-bold text-[13px] tracking-wider text-white uppercase leading-none">Vertex</span>
-              <span className="font-sans text-[7.5px] tracking-[0.25em] text-gray-400 uppercase leading-none mt-1">Markets</span>
+              <span className="font-display font-bold text-[13px] tracking-wider text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[7.5px] tracking-[0.25em] text-gray-400 uppercase leading-none mt-1">Market</span>
             </div>
           </div>
 
@@ -348,30 +346,15 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
               {/* Radial gradient glow backing */}
               <div className="absolute inset-0 bg-radial-gradient from-blue-900/10 to-transparent pointer-events-none" />
 
-              {/* Styled bull graphic placeholder */}
               <div className="relative z-10 flex flex-col items-center">
                 
-                {/* 3D Chrome Bull Graphic mockup */}
-                <div className="relative w-28 h-20 flex items-center justify-center drop-shadow-[0_10px_15px_rgba(30,96,255,0.25)]">
-                  {/* Outer glassy rings */}
-                  <div className="absolute w-14 h-14 rounded-full border border-white/10 flex items-center justify-center animate-spin-slow">
-                    <div className="w-10 h-10 rounded-full border border-blue-500/10" />
-                  </div>
-
-                  {/* Bull icon vector */}
-                  <svg className="w-12 h-12 text-white fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="1.2">
-                    {/* Abstract chrome bull symbol */}
-                    <path d="M12 3c-1.5 0-3 1-3.5 2.5C8 7 8.5 9 10 9.5c1 .5 2 0 2.5-1m-.5-5.5c1.5 0 3 1 3.5 2.5C16 7 15.5 9 14 9.5c-1 .5-2 0-2.5-1" />
-                    <path d="M4 12c1.5-1 4-1.5 8-1.5s6.5.5 8 1.5v3.5c0 2-2 3.5-5 4s-3 .5-3 .5s0 0 0-.5c0-.5-2-.5-5-1s-3-2-3-4V12z" strokeLinecap="round" strokeLinejoin="round" />
-                    <circle cx="12" cy="11" r="1.5" className="fill-blue-500 text-blue-500" />
-                  </svg>
-
-                  {/* Dynamic glossy reflection spark */}
-                  <span className="absolute top-6 left-10 w-2 h-2 bg-white rounded-full blur-[1px] animate-pulse" />
+                {/* 3D Chrome Bull Asset */}
+                <div className="relative w-28 h-20 flex items-center justify-center rounded-lg overflow-hidden border border-white/10">
+                  <img src={bullAsset} alt="Vunex Bull" className="w-full h-full object-contain p-1" />
                 </div>
 
                 <h4 className="text-[11px] font-bold text-white tracking-wide uppercase mt-1">Trade Smarter.</h4>
-                <p className="text-[10px] font-bold text-[#1e60ff] tracking-wide uppercase">Trade Vertex.</p>
+                <p className="text-[10px] font-bold text-[#1e60ff] tracking-wide uppercase">Trade Vunex.</p>
                 
                 <button 
                   onClick={() => triggerToast('VIP Upgrade workflow active!')}
@@ -400,7 +383,7 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
         </aside>
 
         {/* 3. MAIN WORKSPACE */}
-        <main className="flex-grow p-6 sm:p-8 overflow-y-auto z-10 flex flex-col justify-between max-w-7xl mx-auto w-full">
+        <main className="flex-grow p-6 sm:p-8 overflow-y-auto z-10 flex flex-col justify-between w-full">
           
           <div className="space-y-6">
             
@@ -634,10 +617,8 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
                 <div className="rounded-2xl border border-white/[0.06] bg-[#07070a]/90 p-6 flex flex-col md:flex-row md:items-stretch justify-between gap-6 relative overflow-hidden" id="funding-account-card">
                   
                   {/* Giant Chrome Logo Watermark background on the right */}
-                  <div className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-5 text-white/40 pointer-events-none select-none">
-                    <svg className="w-full h-full" viewBox="0 0 24 24" fill="none">
-                      <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2" />
-                    </svg>
+                  <div className="absolute right-[-20px] bottom-[-20px] w-48 h-48 opacity-10 pointer-events-none select-none rounded-xl overflow-hidden">
+                    <img src={vunexLogo} alt="" className="w-full h-full object-cover" />
                   </div>
 
                   {/* Profile Details left column */}
@@ -882,6 +863,7 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
                         <tr className="border-b border-white/[0.04] text-[9.5px] font-bold text-gray-500 uppercase tracking-wider">
                           <th className="pb-2.5">Type</th>
                           <th className="pb-2.5">Description</th>
+                          <th className="pb-2.5">Date</th>
                           <th className="pb-2.5 text-right">Amount</th>
                           <th className="pb-2.5 text-center">Status</th>
                         </tr>
@@ -904,11 +886,9 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
                               <span className="font-extrabold text-white text-[11px]">{tx.type}</span>
                             </td>
                             <td className="py-3 text-gray-400 font-medium max-w-28 truncate" title={tx.description}>
-                              <div>
-                                <p className="leading-none text-[10.5px] font-bold text-gray-300">{tx.description}</p>
-                                <p className="text-[8px] text-gray-500 mt-1">{tx.date}</p>
-                              </div>
+                              <p className="leading-none text-[10.5px] font-bold text-gray-300">{tx.description}</p>
                             </td>
+                            <td className="py-3 text-[10px] text-gray-500 font-medium whitespace-nowrap">{tx.date}</td>
                             <td className={`py-3 text-right font-mono font-bold text-[11px] ${tx.isPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
                               {tx.isPositive ? '+' : '-'}${tx.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </td>
@@ -1007,7 +987,7 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
             </div>
 
             <div className="mt-6 pt-5 border-t border-white/[0.03] flex flex-col sm:flex-row items-center justify-between gap-4 text-[9.5px] text-gray-500 font-mono">
-              <span>© {new Date().getFullYear()} Vertex Markets Ltd. Registered International Custodian and Liquidity Broker.</span>
+              <span>© {new Date().getFullYear()} Vunex Market Ltd. Registered International Custodian and Liquidity Broker.</span>
               <div className="flex items-center gap-1.5 text-emerald-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Connection: Live SSL Protected Ledger</span>

@@ -333,7 +333,7 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
       <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute top-[40%] right-[5%] w-[500px] h-[500px] bg-blue-500/5 blur-[150px] rounded-full pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-8">
+      <div className="w-full px-6 lg:px-10 xl:px-14 relative z-10 pt-8">
         
         {/* ================= HERO SECTION / HEADING ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center py-8 md:py-12 border-b border-white/[0.05] mb-10">
@@ -341,7 +341,7 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
           <div className="lg:col-span-7 space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/20">
               <span className="w-2 h-2 rounded-full bg-brand-blue animate-pulse"></span>
-              <span className="text-[10px] uppercase tracking-widest font-mono text-brand-blue font-semibold">Vertex Global Hub</span>
+              <span className="text-[10px] uppercase tracking-widest font-mono text-brand-blue font-semibold">Vunex Global Hub</span>
             </div>
             
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.1]">
@@ -1171,7 +1171,7 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
               Ready to Trade Global Markets?
             </h2>
             <p className="text-sm text-gray-400 font-sans max-w-xl">
-              Join millions of traders who trust Vunex Markets for professional institutional-grade tech and deep global liquidity.
+              Join millions of traders who trust Vunex Market for professional institutional-grade tech and deep global liquidity.
             </p>
           </div>
 

@@ -6,6 +6,9 @@ import DepositDashboard from './DepositDashboard';
 import WithdrawDashboard from './WithdrawDashboard';
 import HistoryDashboard from './HistoryDashboard';
 import KYCVerification from './KYCVerification';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
+import vLogoAsset from '../assets/images/cutouts/logo3d_v.png';
+import shieldAsset from '../assets/images/cutouts/shield.png';
 import {
   LayoutDashboard,
   TrendingUp,
@@ -128,7 +131,7 @@ const getChartData = (symbol: string, timeframe: string) => {
 };
 
 export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
-  const [activeTab, setActiveTab] = useState<string>('KYCVerification');
+  const [activeTab, setActiveTab] = useState<string>('Overview');
   const [showBalances, setShowBalances] = useState(true);
   const [selectedSymbol, setSelectedSymbol] = useState('EURUSD');
   const [chartTimeframe, setChartTimeframe] = useState('1D');
@@ -395,7 +398,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-black text-[#f4f4f5] font-sans flex overflow-hidden relative selection:bg-blue-600/30 selection:text-white" id="dashboard-root">
+    <div className="min-h-screen bg-[#030303] text-[#f4f4f5] font-sans flex overflow-hidden relative selection:bg-blue-600/30 selection:text-white" id="dashboard-root">
       
       {/* Background ambient lighting */}
       <div className="absolute top-[-20%] left-[20%] w-[800px] h-[800px] bg-[#1e60ff]/5 rounded-full blur-[160px] pointer-events-none z-0" />
@@ -429,16 +432,12 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
           
           {/* Logo Section */}
           <div className="flex items-center gap-2.5 px-1.5 py-1">
-            <div className="relative w-8 h-8 flex items-center justify-center">
-              <span className="absolute inset-0 bg-[#1e60ff]/25 rounded-lg blur-[3px]"></span>
-              <svg className="w-5.5 h-5.5 text-white relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"/>
-              </svg>
+            <div className="relative w-8 h-8 flex items-center justify-center rounded-lg overflow-hidden">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-bold text-[17px] tracking-wider text-white uppercase leading-none">Vertex</span>
-              <span className="font-sans text-[8.5px] tracking-[0.28em] text-gray-400 uppercase leading-none mt-1">Markets</span>
+              <span className="font-display font-bold text-[17px] tracking-wider text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[8.5px] tracking-[0.28em] text-gray-400 uppercase leading-none mt-1">Market</span>
             </div>
           </div>
 
@@ -548,23 +547,13 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
           </nav>
         </div>
 
-        {/* Invite Friend Promo Card Widget (Matches screenshot exactly!) */}
+        {/* Invite Friend Promo Card Widget */}
         <div className="rounded-xl border border-white/[0.06] bg-gradient-to-b from-white/[0.02] to-transparent p-4 relative overflow-hidden text-center shadow-lg" id="sidebar-promo-widget">
-          {/* Subtle logo background shield icon */}
-          <div className="absolute top-[-10px] right-[-10px] opacity-15 rotate-12">
-            <svg className="w-20 h-20 text-white/50" viewBox="0 0 24 24" fill="none">
-              <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" />
-            </svg>
-          </div>
-
           <div className="relative z-10 flex flex-col items-center">
             
-            {/* Glossy futuristic logo placeholder */}
-            <div className="w-12 h-12 bg-gradient-to-tr from-blue-900/40 via-blue-900/10 to-transparent rounded-lg border border-white/10 flex items-center justify-center mb-3 group hover:scale-105 transition-transform">
-              <svg className="w-7.5 h-7.5 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"/>
-              </svg>
+            {/* 3D V Logo Asset */}
+            <div className="w-14 h-14 rounded-lg overflow-hidden border border-white/10 mb-3 group hover:scale-105 transition-transform">
+              <img src={vLogoAsset} alt="Vunex" className="w-full h-full object-contain p-1" />
             </div>
 
             <h4 className="text-[12px] font-bold text-white tracking-wide">Invite a friend</h4>
@@ -754,7 +743,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
                     >
                       <div className="px-3 py-2 border-b border-white/[0.05]">
                         <p className="text-xs font-semibold text-white">Signed in as</p>
-                        <p className="text-[10px] text-gray-400 truncate mt-0.5">trader@vertexmarkets.com</p>
+                        <p className="text-[10px] text-gray-400 truncate mt-0.5">trader@vunexmarket.com</p>
                       </div>
                       
                       <button
@@ -799,7 +788,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
         </header>
 
         {/* 4. MAIN LAYOUT CONTAINER */}
-        <div className="flex-grow p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
+        <div className="flex-grow p-4 sm:p-6 lg:p-8 w-full space-y-6">
           
           {/* TOP METRIC CARDS ROW */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -1014,7 +1003,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-left">
                     <h3 className="font-sans font-bold text-xs text-white">Market Watch</h3>
-                    <span className="text-[9px] text-gray-500 block mt-0.5">Vertex major trading assets</span>
+                    <span className="text-[9px] text-gray-500 block mt-0.5">Vunex Market major trading assets</span>
                   </div>
                   <div className="flex gap-2">
                     <button className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center border border-white/5 text-gray-400 hover:text-white cursor-pointer focus:outline-none">
@@ -1341,27 +1330,9 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
                 </button>
               </div>
 
-              {/* High fidelity 3D steel metallic shield design representation */}
-              <div className="relative w-[110px] h-[110px] flex items-center justify-center flex-shrink-0">
-                {/* Shield glow rings */}
-                <div className="absolute inset-0 bg-[#1e60ff]/5 rounded-full blur-md animate-pulse-glow" />
-                <div className="absolute inset-2 border border-white/5 rounded-full" />
-                
-                {/* Custom glowing steel shield illustration */}
-                <div className="relative w-16 h-20 text-gray-400 group-hover:text-white transition-colors">
-                  <svg className="w-full h-full drop-shadow-[0_10px_15px_rgba(30,96,255,0.2)]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" fill="url(#shieldSteel)" stroke="#4b5563" strokeWidth="1.5" />
-                    <path d="M12 4.5L18.5 7V12C18.5 16.5 12 19.8 12 19.8V4.5Z" fill="#1e60ff" fillOpacity="0.2" />
-                    <path d="M9 11L11 13L15 9" stroke="#1e60ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    <defs>
-                      <linearGradient id="shieldSteel" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor="#1f2937" />
-                        <stop offset="50%" stopColor="#111827" />
-                        <stop offset="100%" stopColor="#030712" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
+              {/* Shield 3D asset */}
+              <div className="relative w-[110px] h-[110px] flex items-center justify-center flex-shrink-0 rounded-xl overflow-hidden">
+                <img src={shieldAsset} alt="Security Shield" className="w-full h-full object-cover opacity-80" />
               </div>
             </div>
 
@@ -1406,7 +1377,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
             </div>
 
             <div className="mt-6 pt-6 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] text-gray-500 font-mono">
-              <span>© {new Date().getFullYear()} Vertex Markets Ltd. All rights reserved. Registered broker.</span>
+              <span>© {new Date().getFullYear()} Vunex Market Ltd. All rights reserved. Registered broker.</span>
               <div className="flex items-center gap-1.5 text-emerald-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
                 <span>Server Status: Operational</span>
@@ -1603,7 +1574,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
                 <div className="p-3 bg-rose-500/5 border border-rose-500/10 rounded-lg text-[10px] text-gray-400 flex items-start gap-2.5">
                   <AlertCircle className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
                   <p className="leading-normal">
-                    Please ensure that the details of the designated bank account match the legal full name on your verified Vertex Markets profile exactly to prevent payout delays.
+                    Please ensure that the details of the designated bank account match the legal full name on your verified Vunex Market profile exactly to prevent payout delays.
                   </p>
                 </div>
 
@@ -1817,7 +1788,7 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
                 {/* Copiable share link */}
                 <div className="flex gap-2 items-center p-2 rounded-xl bg-black border border-white/10 mt-4">
                   <span className="text-[10px] text-gray-500 font-mono truncate select-all flex-grow pl-1 text-left">
-                    https://vertexmarkets.com/invite/VIP-8857
+                    https://vunexmarket.com/invite/VIP-8857
                   </span>
                   <button
                     onClick={() => {

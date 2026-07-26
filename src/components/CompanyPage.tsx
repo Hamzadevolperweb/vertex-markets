@@ -133,7 +133,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative" id="company-view">
+    <div className="w-full px-6 lg:px-10 xl:px-14 py-12 relative" id="company-view">
       
       {/* 1. HERO HEADER SECTION */}
       <div className="grid lg:grid-cols-12 gap-12 items-center mb-16">
@@ -464,7 +464,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
             <div>
               <h3 className="font-display font-medium text-lg text-white">Careers</h3>
               <p className="font-sans text-xs text-gray-400 mt-1 leading-relaxed">
-                Join Vertex Markets and scale next-generation trading code.
+                Join Vunex Market and scale next-generation trading code.
               </p>
             </div>
           </div>
@@ -487,7 +487,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
             Shape the Future of Trading
           </h2>
           <p className="font-sans text-gray-400 text-sm sm:text-base leading-relaxed font-light">
-            Join Vertex Markets and build your career with a global leader. We are looking for innovators, coders, risk models, and disruptors.
+            Join Vunex Market and build your career with a global leader. We are looking for innovators, coders, risk models, and disruptors.
           </p>
           <div className="pt-2">
             <button 
@@ -646,7 +646,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                   <h2 className="font-display font-bold text-xl text-white">
                     {activeTab === 'story' && 'Our Corporate Story'}
                     {activeTab === 'mission' && 'Mission, Vision & Strategy'}
-                    {activeTab === 'values' && 'Vertex Pillars & Values'}
+                    {activeTab === 'values' && 'Vunex Pillars & Values'}
                     {activeTab === 'leadership' && 'Executive Board of Directors'}
                     {activeTab === 'presence' && 'Interactive Hub Map'}
                     {activeTab === 'technology' && 'Low-Latency Liquidity Hardware'}
@@ -676,7 +676,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                 {activeTab === 'story' && (
                   <div className="space-y-6">
                     <p className="text-gray-300 text-sm leading-relaxed">
-                      Founded in 2019 by quantitative coders and high-frequency traders, Vertex Markets was designed with a single objective: to dismantle the barrier between retail traders and institutional-grade pricing. Here is our growth timeline:
+                      Founded in 2019 by quantitative coders and high-frequency traders, Vunex Market was designed with a single objective: to dismantle the barrier between retail traders and institutional-grade pricing. Here is our growth timeline:
                     </p>
                     
                     <div className="border-l border-brand-blue/30 ml-3 pl-6 space-y-6 relative">
@@ -686,7 +686,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                         </span>
                         <div className="font-display font-bold text-sm text-brand-blue">2019 — Inception & Foundation</div>
                         <p className="text-xs text-gray-400 mt-1">
-                          Vertex Markets is bootstrapped in London. Built the first custom liquidity aggregator designed to pull spreads from 15+ top tier banks concurrently.
+                          Vunex Market is bootstrapped in London. Built the first custom liquidity aggregator designed to pull spreads from 15+ top tier banks concurrently.
                         </p>
                       </div>
 
@@ -787,7 +787,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                           <h4 className="font-display font-medium text-white text-sm">Uncompromising Trust</h4>
                         </div>
                         <p className="text-xs text-gray-400 leading-relaxed">
-                          We isolate client assets in Tier-1 custody vaults. Vertex cannot touch, leverage, or borrow against user deposits under any market conditions.
+                          We isolate client assets in Tier-1 custody vaults. Vunex cannot touch, leverage, or borrow against user deposits under any market conditions.
                         </p>
                       </div>
 
@@ -808,7 +808,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                 {activeTab === 'leadership' && (
                   <div className="space-y-6">
                     <p className="text-gray-300 text-sm">
-                      Our board unites experts in quantitative physics, cryptographic security, and international finance to oversee the integrity of Vertex Markets operations:
+                      Our board unites experts in quantitative physics, cryptographic security, and international finance to oversee the integrity of Vunex Market operations:
                     </p>
 
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -989,14 +989,14 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                 {activeTab === 'compliance' && (
                   <div className="space-y-4">
                     <p className="text-gray-300 text-sm">
-                      Vertex Markets is authorized and strictly monitored by major global financial jurisdictions. Our corporate entities, license registry strings, and segregated accounts details are listed below:
+                      Vunex Market is authorized and strictly monitored by major global financial jurisdictions. Our corporate entities, license registry strings, and segregated accounts details are listed below:
                     </p>
 
                     <div className="space-y-3">
                       <div className="p-4 bg-[#0a0c14] border border-white/5 rounded-xl flex items-center justify-between">
                         <div>
                           <h4 className="font-display font-bold text-white text-sm">United Kingdom — Financial Conduct Authority (FCA)</h4>
-                          <p className="text-xs text-gray-500">Vertex Global Markets UK Limited — Authorized for Retail and Professional brokerage operations.</p>
+                          <p className="text-xs text-gray-500">Vunex Global Market UK Limited — Authorized for Retail and Professional brokerage operations.</p>
                         </div>
                         <div className="font-mono text-xs font-bold text-brand-blue bg-brand-blue/10 px-3 py-1 rounded-full border border-brand-blue/20">
                           Ref: 982131
@@ -1006,7 +1006,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                       <div className="p-4 bg-[#0a0c14] border border-white/5 rounded-xl flex items-center justify-between">
                         <div>
                           <h4 className="font-display font-bold text-white text-sm">Australia — Australian Securities & Investments Commission (ASIC)</h4>
-                          <p className="text-xs text-gray-500">Vertex APAC Pty Ltd — Licensed to trade OTC derivative contracts and currencies.</p>
+                          <p className="text-xs text-gray-500">Vunex APAC Pty Ltd — Licensed to trade OTC derivative contracts and currencies.</p>
                         </div>
                         <div className="font-mono text-xs font-bold text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
                           ACN: 629181292
@@ -1016,7 +1016,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                       <div className="p-4 bg-[#0a0c14] border border-white/5 rounded-xl flex items-center justify-between">
                         <div>
                           <h4 className="font-display font-bold text-white text-sm">South Africa — Financial Sector Conduct Authority (FSCA)</h4>
-                          <p className="text-xs text-gray-500">Vertex Africa Markets (Pty) Ltd — Registered Financial Services Provider.</p>
+                          <p className="text-xs text-gray-500">Vunex Africa Market (Pty) Ltd — Registered Financial Services Provider.</p>
                         </div>
                         <div className="font-mono text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
                           FSP: 51928
@@ -1181,7 +1181,7 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
                     ) : (
                       <div className="space-y-4">
                         <p className="text-gray-300 text-sm">
-                          Vertex Markets is expanding. We are currently recruiting talented software specialists, quant analysts, and compliance directors across our regional offices:
+                          Vunex Market is expanding. We are currently recruiting talented software specialists, quant analysts, and compliance directors across our regional offices:
                         </p>
 
                         <div className="space-y-3">

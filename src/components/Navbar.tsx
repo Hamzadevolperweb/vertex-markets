@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ArrowRight, TrendingUp } from 'lucide-react';
+import { Menu, X, ArrowRight } from 'lucide-react';
+import BrandLogo from './BrandLogo';
 
 interface NavbarProps {
   onLoginClick?: () => void;
@@ -16,10 +17,10 @@ interface NavbarProps {
   activeLink?: string;
 }
 
-export default function Navbar({ 
-  onLoginClick, 
-  onGetStartedClick, 
-  onLogoClick, 
+export default function Navbar({
+  onLoginClick,
+  onGetStartedClick,
+  onLogoClick,
   onAdminClick,
   onMarketsClick,
   onTradingClick,
@@ -27,184 +28,115 @@ export default function Navbar({
   onResourcesClick,
   onCompanyClick,
   onPartnersClick,
-  activeLink
+  activeLink,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
-    { name: 'Trading', href: '#trading', onClick: onTradingClick },
-    { name: 'Platforms', href: '#platforms', onClick: onPlatformsClick },
-    { name: 'Markets', href: '#markets', onClick: onMarketsClick },
-    { name: 'Resources', href: '#resources', onClick: onResourcesClick },
-    { name: 'Company', href: '#company', onClick: onCompanyClick },
-    { name: 'Partners', href: '#partners', onClick: onPartnersClick },
+    { name: 'Trading', onClick: onTradingClick },
+    { name: 'Platforms', onClick: onPlatformsClick },
+    { name: 'Markets', onClick: onMarketsClick },
+    { name: 'Resources', onClick: onResourcesClick },
+    { name: 'Company', onClick: onCompanyClick },
+    { name: 'Partners', onClick: onPartnersClick },
   ];
 
   return (
-    <motion.nav 
-      initial={{ y: -20, opacity: 0 }}
+    <motion.nav
+      initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-[#030303]/80 backdrop-blur-md border-b border-white/[0.05]"
+      transition={{ duration: 0.4 }}
+      className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/[0.05]"
       id="main-navbar"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={onLogoClick}
-              className="flex items-center gap-2 group cursor-pointer focus:outline-none text-left"
-            >
-              <div className="relative w-8 h-8 flex items-center justify-center">
-                {/* Visual Vertex 'V' Icon */}
-                <span className="absolute inset-0 bg-brand-blue/20 rounded-lg blur-sm group-hover:bg-brand-blue/30 transition-all"></span>
-                <svg className="w-6 h-6 text-brand-blue relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  {/* Outer V Chevron */}
-                  <path d="M3 5L12 21L21 5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  {/* Inner V Chevron */}
-                  <path d="M7 5L12 14L17 5" stroke="#a5f3fc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.9"/>
-                </svg>
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="font-display font-bold text-lg tracking-wider text-white uppercase leading-none">Vunex</span>
-                <span className="font-sans text-[9px] tracking-[0.3em] text-gray-400 uppercase leading-none mt-1">Markets</span>
-              </div>
-            </button>
-          </div>
+      <div className="w-full px-6 lg:px-10 xl:px-14">
+        <div className="flex items-center justify-between h-[68px]">
+          <BrandLogo onClick={onLogoClick} variant="mark" />
 
-          {/* Desktop Nav Links */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => {
-              const isLinkActive = activeLink === link.name;
+              const active = activeLink === link.name;
               return (
-                <a
+                <button
                   key={link.name}
-                  href={link.onClick ? undefined : link.href}
-                  onClick={(e) => {
-                    if (link.onClick) {
-                      e.preventDefault();
-                      link.onClick();
-                    }
-                  }}
-                  className={`font-sans text-sm font-medium transition-colors py-2 relative group cursor-pointer ${
-                    isLinkActive ? 'text-brand-blue font-bold' : 'text-gray-400 hover:text-white'
+                  type="button"
+                  onClick={link.onClick}
+                  className={`relative text-[13px] font-medium tracking-wide transition-colors cursor-pointer py-1 ${
+                    active ? 'text-white' : 'text-white/65 hover:text-white'
                   }`}
                 >
                   {link.name}
-                  <span className={`absolute bottom-0 left-0 h-[2px] bg-brand-blue transition-all ${
-                    isLinkActive ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`}></span>
-                </a>
+                  {active && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-brand-blue rounded-full" />
+                  )}
+                </button>
               );
             })}
           </div>
 
-          {/* Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button 
-              id="btn-admin-portal"
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              type="button"
               onClick={onAdminClick}
-              className="font-sans text-sm font-medium text-gray-400 hover:text-white border border-transparent hover:border-white/10 hover:bg-white/5 px-4 py-2.5 rounded-lg transition-all cursor-pointer"
+              className="text-[11px] text-white/30 hover:text-white/60 px-1.5 py-2 cursor-pointer"
             >
-              Admin Portal
+              Admin
             </button>
-            <button 
+            <button
               id="btn-login"
+              type="button"
               onClick={onLoginClick}
-              className="font-sans text-sm font-medium text-white hover:text-brand-blue border border-white/10 hover:border-brand-blue/30 bg-white/5 hover:bg-brand-blue/5 px-5 py-2.5 rounded-lg transition-all cursor-pointer"
+              className="text-[13px] font-medium text-white border border-white/30 hover:border-white/55 px-5 py-2 rounded-lg transition-colors cursor-pointer"
             >
               Login
             </button>
-            <button 
+            <button
               id="btn-get-started"
+              type="button"
               onClick={onGetStartedClick}
-              className="font-sans text-sm font-medium bg-brand-blue hover:bg-brand-blue/90 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-brand-blue/25 hover:shadow-brand-blue/35 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="text-[13px] font-semibold bg-brand-blue hover:bg-[#2a6aff] text-white px-5 py-2 rounded-lg inline-flex items-center gap-2 shadow-[0_0_22px_rgba(30,96,255,0.35)] transition-all cursor-pointer"
             >
               Get Started
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-400 hover:text-white focus:outline-none p-2"
-              aria-label="Toggle menu"
-              id="btn-mobile-menu"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-
+          <button
+            type="button"
+            className="md:hidden text-white/70 p-2"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Menu"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#050505] border-b border-white/[0.05]"
-            id="mobile-drawer"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-black border-t border-white/[0.06] overflow-hidden"
           >
-            <div className="px-4 pt-2 pb-6 space-y-3">
-              {navLinks.map((link) => {
-                const isLinkActive = activeLink === link.name;
-                return (
-                  <a
-                    key={link.name}
-                    href={link.onClick ? undefined : link.href}
-                    onClick={(e) => {
-                      setIsOpen(false);
-                      if (link.onClick) {
-                        e.preventDefault();
-                        link.onClick();
-                      }
-                    }}
-                    className={`block px-3 py-2.5 rounded-md text-base font-medium transition-colors cursor-pointer ${
-                      isLinkActive 
-                        ? 'bg-brand-blue/10 text-brand-blue font-bold border-l-2 border-brand-blue pl-2.5' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {link.name}
-                  </a>
-                );
-              })}
-              <div className="pt-4 flex flex-col gap-3 px-3">
-                <button 
+            <div className="px-6 py-4 space-y-1">
+              {navLinks.map((link) => (
+                <button
+                  key={link.name}
+                  type="button"
                   onClick={() => {
                     setIsOpen(false);
-                    onAdminClick?.();
+                    link.onClick?.();
                   }}
-                  className="w-full text-center font-sans text-sm font-medium text-gray-400 border border-white/5 hover:border-white/10 hover:bg-white/5 py-2.5 rounded-lg transition-all cursor-pointer"
+                  className="block w-full text-left text-sm text-white/70 hover:text-white py-2.5 cursor-pointer"
                 >
-                  Admin Portal
+                  {link.name}
                 </button>
-                <button 
-                  onClick={() => {
-                    setIsOpen(false);
-                    onLoginClick?.();
-                  }}
-                  className="w-full text-center font-sans text-sm font-medium text-white hover:text-brand-blue border border-white/10 bg-white/5 py-3 rounded-lg transition-all cursor-pointer"
-                >
-                  Login
-                </button>
-                <button 
-                  onClick={() => {
-                    setIsOpen(false);
-                    onGetStartedClick?.();
-                  }}
-                  className="w-full text-center font-sans text-sm font-medium bg-brand-blue hover:bg-brand-blue/90 text-white py-3 rounded-lg flex items-center justify-center gap-2 transition-all cursor-pointer"
-                >
-                  Get Started
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+              ))}
+              <div className="pt-3 flex flex-col gap-2">
+                <button type="button" onClick={() => { setIsOpen(false); onLoginClick?.(); }} className="w-full border border-white/20 text-white py-2.5 rounded-md text-sm cursor-pointer">Login</button>
+                <button type="button" onClick={() => { setIsOpen(false); onGetStartedClick?.(); }} className="w-full bg-brand-blue text-white py-2.5 rounded-md text-sm font-semibold cursor-pointer">Get Started</button>
               </div>
             </div>
           </motion.div>

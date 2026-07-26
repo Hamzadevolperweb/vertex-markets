@@ -18,9 +18,23 @@ import {
   FileCode,
   ArrowRight,
   Headphones,
-  Laptop
+  Laptop,
+  Bell,
+  ChevronDown,
+  LayoutDashboard,
+  Wallet,
+  Globe,
+  CreditCard,
+  Settings,
+  TrendingUp,
+  BarChart3,
+  Award,
+  Megaphone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
+import shieldAsset from '../assets/images/cutouts/shield.png';
+import bullAsset from '../assets/images/cutouts/bull.png';
 
 interface KYCVerificationProps {
   onLogout: () => void;
@@ -127,8 +141,142 @@ export default function KYCVerification({ onLogout, onNavigate }: KYCVerificatio
         )}
       </AnimatePresence>
 
-      {/* Main Container */}
-      <div className="flex-grow flex flex-col p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6" id="kyc-container">
+      {/* TOP NAVBAR */}
+      <header className="h-20 bg-[#050507] border-b border-white/[0.05] flex items-center justify-between px-6 sm:px-8 z-30 shrink-0 sticky top-0">
+        <div className="flex items-center gap-10">
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => onNavigate('Overview')}>
+            <div className="relative w-7 h-7 flex items-center justify-center rounded overflow-hidden">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="font-display font-bold text-[13px] tracking-wider text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[7.5px] tracking-[0.25em] text-gray-400 uppercase leading-none mt-1">Market</span>
+            </div>
+          </div>
+
+          <div className="hidden lg:flex items-center gap-8">
+            <button className="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer" onClick={() => onNavigate('Trade')}>Trading</button>
+            <button className="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">Platforms</button>
+            <button className="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer" onClick={() => onNavigate('Markets')}>Markets</button>
+            <button className="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">Resources</button>
+            <button className="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">Company</button>
+            <button className="text-xs font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">Partners</button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <button className="text-gray-400 hover:text-white p-1.5 hover:bg-white/5 rounded-lg transition-colors cursor-pointer">
+            <Settings className="w-4.5 h-4.5" />
+          </button>
+          <button className="text-gray-400 hover:text-white p-1.5 hover:bg-white/5 rounded-lg transition-colors cursor-pointer relative">
+            <Bell className="w-4.5 h-4.5" />
+            <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-[#1e60ff] rounded-full" />
+          </button>
+          <span className="h-6 w-[1px] bg-white/10 mx-1 hidden sm:block" />
+          <div className="flex items-center gap-2 pl-1">
+            <div className="flex flex-col text-right">
+              <span className="text-[11px] font-semibold text-white leading-none">John Trader</span>
+              <span className="text-[9px] text-emerald-400 font-medium mt-0.5">Verified: Basic</span>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-white/10 border border-white/15 flex items-center justify-center text-[11px] font-extrabold text-white cursor-pointer hover:border-white/30 transition-colors">
+              JT
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* BODY: SIDEBAR + MAIN */}
+      <div className="flex-grow flex min-h-0 relative">
+        
+        {/* LEFT SIDEBAR */}
+        <aside className="w-56 border-r border-white/[0.05] bg-[#050507]/40 flex flex-col justify-between p-4 shrink-0 hidden md:flex select-none">
+          <div className="space-y-5">
+            <nav className="space-y-1">
+              {[
+                { label: 'Dashboard', icon: LayoutDashboard, path: 'Overview' },
+                { label: 'Accounts', icon: Globe, path: 'Accounts' },
+                { label: 'Funds', icon: CreditCard, path: 'Funds' },
+                { label: 'Trading', icon: TrendingUp, path: 'Trade' },
+                { label: 'Copy Trading', icon: BarChart3, path: 'CopyTrading' },
+                { label: 'Reports', icon: FileText, path: 'Reports' },
+                { label: 'Promotions', icon: Megaphone, path: 'Promotions' },
+              ].map((item) => {
+                const IconComp = item.icon;
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => onNavigate(item.path)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/[0.02] transition-all cursor-pointer"
+                  >
+                    <IconComp className="w-4 h-4 text-gray-500" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Profile section (expanded) */}
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-gray-400">
+                <User className="w-4 h-4 text-gray-500" />
+                <span>Profile</span>
+                <ChevronDown className="w-3 h-3 ml-auto text-gray-600" />
+              </div>
+              <div className="pl-8 space-y-0.5">
+                {[
+                  { label: 'Personal Details', path: 'Profile' },
+                  { label: 'Security', path: 'Security' },
+                  { label: 'KYC Verification', path: 'KYC', active: true },
+                  { label: 'Notifications', path: 'Notifications' },
+                  { label: 'Settings', path: 'Settings' },
+                ].map((sub) => (
+                  <button
+                    key={sub.label}
+                    onClick={() => !sub.active && onNavigate(sub.path)}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                      sub.active
+                        ? 'text-white bg-[#1e60ff] shadow-lg shadow-blue-500/10'
+                        : 'text-gray-500 hover:text-white hover:bg-white/[0.02]'
+                    }`}
+                  >
+                    {sub.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={() => onNavigate('Support')}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/[0.02] transition-all cursor-pointer"
+            >
+              <HelpCircle className="w-4 h-4 text-gray-500" />
+              <span>Help & Support</span>
+            </button>
+          </div>
+
+          {/* Bull promo widget */}
+          <div className="space-y-3 mt-4">
+            <div className="rounded-xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-transparent p-3.5 relative overflow-hidden text-center">
+              <div className="relative z-10 flex flex-col items-center">
+                <div className="relative w-24 h-16 flex items-center justify-center rounded-lg overflow-hidden border border-white/10">
+                  <img src={bullAsset} alt="Vunex Bull" className="w-full h-full object-contain p-1" />
+                </div>
+                <h4 className="text-[10px] font-bold text-white tracking-wide uppercase mt-1.5">Trade Smarter.</h4>
+                <p className="text-[9px] font-bold text-[#1e60ff] tracking-wide uppercase">Trade Vunex.</p>
+                <button 
+                  onClick={() => triggerToast('VIP Upgrade workflow active!')}
+                  className="mt-3 w-full py-2 bg-[#1e60ff] hover:bg-blue-600 text-white text-[10px] font-bold rounded-lg transition-all cursor-pointer shadow-md shadow-blue-500/20"
+                >
+                  Upgrade to Pro
+                </button>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT */}
+        <main className="flex-grow p-6 sm:p-8 overflow-y-auto z-10">
+          <div className="w-full space-y-6">
         
         {/* HEADER ROW WITH TITLE */}
         <div className="text-left">
@@ -723,8 +871,13 @@ export default function KYCVerification({ onLogout, onNavigate }: KYCVerificatio
             </div>
 
             {/* BOX 2: Secure. Regulated. Trusted. */}
-            <div className="bg-[#07070a]/90 border border-white/[0.05] rounded-2xl p-5 text-left space-y-4">
-              <h3 className="text-[11px] font-black text-white uppercase tracking-wider">Secure. Regulated. Trusted.</h3>
+            <div className="bg-[#07070a]/90 border border-white/[0.05] rounded-2xl p-5 text-left space-y-4 relative overflow-hidden">
+              <img
+                src={shieldAsset}
+                alt=""
+                className="absolute -right-4 -top-2 w-28 h-28 object-contain opacity-50 pointer-events-none"
+              />
+              <h3 className="text-[11px] font-black text-white uppercase tracking-wider relative z-10">Secure. Regulated. Trusted.</h3>
               
               <div className="space-y-4">
                 
@@ -788,6 +941,9 @@ export default function KYCVerification({ onLogout, onNavigate }: KYCVerificatio
           </div>
 
         </div>
+
+          </div>
+        </main>
 
       </div>
 

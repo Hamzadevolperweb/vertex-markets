@@ -21,6 +21,8 @@ import {
   Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import logoImg from '../assets/images/cutouts/logo_official.png';
+import shieldImg from '../assets/images/cutouts/shield.png';
 
 interface AdminLoginProps {
   onBackToHome: () => void;
@@ -83,7 +85,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
   };
 
   return (
-    <div className="min-h-screen bg-[#020203] text-[#f4f4f6] font-sans flex flex-col justify-between relative overflow-hidden select-none selection:bg-[#1e60ff]/30 selection:text-white" id="admin-login-root">
+    <div className="min-h-screen bg-[#030303] text-[#f4f4f6] font-sans flex flex-col justify-between relative overflow-hidden select-none selection:bg-[#1e60ff]/30 selection:text-white" id="admin-login-root">
       
       {/* Decorative background glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/5 blur-[120px] pointer-events-none" />
@@ -98,32 +100,25 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             className="fixed top-6 left-1/2 -translate-x-1/2 px-5 py-3.5 rounded-xl border border-white/[0.08] shadow-[0_12px_32px_rgba(0,0,0,0.8)] z-[100] flex items-center gap-3 backdrop-blur-md bg-[#09090c]/95 min-w-[320px] text-xs font-semibold text-white"
           >
-            <ShieldCheck className="w-4.5 h-4.5 text-[#1e60ff] animate-pulse" />
+            <ShieldCheck className="w-4.5 h-4.5 text-[#1e60ff]" />
             <span>{toastMsg}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* TOP HEADER BAR */}
-      <header className="max-w-7xl w-full mx-auto px-6 pt-6 flex items-center justify-between z-20" id="admin-header">
+      <header className="w-full px-6 lg:px-10 xl:px-14 pt-6 flex items-center justify-between z-20" id="admin-header">
         {/* Brand Logo - Styled strictly like VUNEX MARKET */}
         <div className="flex items-center gap-2.5">
           <button 
             onClick={onBackToHome}
             className="flex items-center gap-2.5 group cursor-pointer text-left focus:outline-none"
           >
-            <div className="relative w-9 h-9 flex items-center justify-center">
-              <span className="absolute inset-0 bg-[#1e60ff]/20 rounded-lg blur-sm group-hover:bg-[#1e60ff]/30 transition-all"></span>
-              {/* VUNEX style Chevron Double logo */}
-              <svg className="w-7 h-7 text-[#1e60ff] relative z-10" viewBox="0 0 24 24" fill="none">
-                <path d="M3 4L12 21L21 4" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M7.5 4L12 13L16.5 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" opacity="0.8"/>
-              </svg>
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="font-display font-black text-xl tracking-wider text-white uppercase leading-none">Vunex</span>
-              <span className="font-sans text-[9px] tracking-[0.3em] text-[#1e60ff] uppercase leading-none mt-1 font-bold">Market</span>
-            </div>
+            <img 
+              src={logoImg} 
+              alt="VUNEX MARKET" 
+              className="h-9 w-auto object-contain drop-shadow-[0_0_8px_rgba(30,96,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(30,96,255,0.5)] transition-all"
+            />
           </button>
         </div>
 
@@ -168,7 +163,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
       </header>
 
       {/* MAIN DUAL ROW GRID */}
-      <main className="max-w-7xl w-full mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10 flex-grow" id="admin-main-grid">
+      <main className="w-full px-6 lg:px-10 xl:px-14 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center z-10 flex-grow" id="admin-main-grid">
         
         {/* LEFT COLUMN: Holographic Dashboards & Features (occupies 7 columns) */}
         <section className="lg:col-span-7 flex flex-col justify-center space-y-8 text-left order-2 lg:order-1" id="admin-left-col">
@@ -179,7 +174,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
             </span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
               Manage Smarter.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1e60ff] via-[#3380ff] to-[#00c8ff] animate-pulse">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1e60ff] via-[#3380ff] to-[#00c8ff]">
                 Control Vunex.
               </span>
             </h1>
@@ -193,30 +188,23 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
             
             {/* Base Pedestal Platform */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[220px] sm:w-[280px] h-[30px] rounded-full bg-[#1e60ff]/10 border-b-2 border-[#1e60ff]/40 shadow-[0_15px_40px_rgba(30,96,255,0.3)] transform rotateX(60deg) scale-y-50 flex items-center justify-center">
-              <div className="absolute inset-2 rounded-full border border-cyan-400/20 animate-ping" />
+              <div className="absolute inset-2 rounded-full border border-cyan-400/20" />
               <div className="absolute inset-4 rounded-full border border-blue-400/30" />
             </div>
 
-            {/* Central Glowing Shield with Padlock */}
-            <div className="absolute z-20 flex flex-col items-center justify-center transform -translate-y-6">
-              <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
-                {/* Backlight pulsing bloom */}
-                <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-xl animate-pulse" />
-                
-                {/* Circular orbits */}
-                <div className="absolute inset-0 rounded-full border border-[#1e60ff]/20 animate-spin [animation-duration:15s]" />
-                <div className="absolute inset-2 rounded-full border border-dashed border-[#00c8ff]/30 animate-spin [animation-duration:8s] [animation-direction:reverse]" />
-
-                {/* Cyber Shield Icon */}
-                <div className="relative z-10 w-16 h-16 sm:w-20 sm:h-20 bg-black/80 border border-[#1e60ff]/40 rounded-2xl flex items-center justify-center text-[#1e60ff] shadow-[0_0_30px_rgba(30,96,255,0.25)] backdrop-blur-md">
-                  <svg className="w-10 h-10 sm:w-12 sm:h-12 text-[#1e60ff] animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                  {/* Embedded Padlock inside shield */}
-                  <div className="absolute inset-0 flex items-center justify-center pt-2">
-                    <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-white stroke-[2.5]" />
-                  </div>
-                </div>
+            {/* Central 3D Shield Hero Image */}
+            <div className="absolute z-20 flex flex-col items-center justify-center transform -translate-y-4">
+              <div className="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center">
+                <div className="absolute inset-[-20%] rounded-full bg-[#1e60ff]/8 blur-[40px]" />
+                <div className="absolute inset-[-10%] rounded-full border border-[#1e60ff]/15" />
+                <div className="absolute inset-0 rounded-full border border-dashed border-[#00c8ff]/20" />
+                <img 
+                  src={shieldImg} 
+                  alt="Security Shield" 
+                  className="relative z-10 w-28 h-28 sm:w-36 sm:h-36 object-contain drop-shadow-[0_0_40px_rgba(30,96,255,0.4)]"
+                  draggable={false}
+                />
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-3 rounded-full bg-[#1e60ff]/20 blur-md" />
               </div>
             </div>
 
@@ -265,7 +253,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[8px] font-black tracking-wider text-gray-400 uppercase">Market Activity</span>
                 <span className="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-400 text-[6px] font-black uppercase flex items-center gap-1">
-                  <span className="w-1 h-1 bg-emerald-400 rounded-full animate-ping" />
+                  <span className="w-1 h-1 bg-emerald-400 rounded-full" />
                   Live
                 </span>
               </div>
@@ -387,9 +375,6 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
               <p className="text-[11px] text-gray-500 font-semibold mt-1">
                 Sign in to access the VUNEX MARKET control center.
               </p>
-              <div className="mt-3.5 p-3 rounded-xl bg-[#1e60ff]/5 border border-[#1e60ff]/10 text-[10px] text-blue-400 font-medium leading-relaxed">
-                Tip: Prefilled default credentials: <strong className="text-white">admin@vunexmarket.com</strong> / <strong className="text-white">admin123</strong>
-              </div>
             </div>
 
             <form onSubmit={handleLoginSubmit} className="space-y-4 text-left">
@@ -406,7 +391,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#030304]/80 border border-white/[0.08] focus:border-[#1e60ff] focus:outline-none rounded-xl py-3 pl-11 pr-4 text-xs font-medium text-white placeholder-gray-600 transition-all focus:shadow-[0_0_12px_rgba(30,96,255,0.15)]"
+                    className="w-full bg-[#030303]/80 border border-white/[0.08] focus:border-[#1e60ff] focus:outline-none rounded-xl py-3 pl-11 pr-4 text-xs font-medium text-white placeholder-gray-600 transition-all focus:shadow-[0_0_12px_rgba(30,96,255,0.15)]"
                     placeholder="admin@vunexmarket.com"
                   />
                 </div>
@@ -424,7 +409,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-[#030304]/80 border border-white/[0.08] focus:border-[#1e60ff] focus:outline-none rounded-xl py-3 pl-11 pr-11 text-xs font-medium text-white placeholder-gray-600 transition-all focus:shadow-[0_0_12px_rgba(30,96,255,0.15)]"
+                    className="w-full bg-[#030303]/80 border border-white/[0.08] focus:border-[#1e60ff] focus:outline-none rounded-xl py-3 pl-11 pr-11 text-xs font-medium text-white placeholder-gray-600 transition-all focus:shadow-[0_0_12px_rgba(30,96,255,0.15)]"
                     placeholder="Enter your password"
                   />
                   <button
@@ -452,7 +437,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
                     pattern="[0-9]*"
                     value={twoFactor}
                     onChange={(e) => setTwoFactor(e.target.value.replace(/\D/g, ''))}
-                    className="w-full bg-[#030304]/80 border border-white/[0.08] focus:border-[#1e60ff] focus:outline-none rounded-xl py-3 pl-11 pr-11 text-xs font-medium text-white placeholder-gray-600 tracking-widest font-mono transition-all focus:shadow-[0_0_12px_rgba(30,96,255,0.15)]"
+                    className="w-full bg-[#030303]/80 border border-white/[0.08] focus:border-[#1e60ff] focus:outline-none rounded-xl py-3 pl-11 pr-11 text-xs font-medium text-white placeholder-gray-600 tracking-widest font-mono transition-all focus:shadow-[0_0_12px_rgba(30,96,255,0.15)]"
                     placeholder="Enter 6-digit code"
                   />
                   <span className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-500 cursor-help" title="2-Step Authenticator App code">
@@ -535,7 +520,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
       </main>
 
       {/* FOOTER BAR */}
-      <footer className="max-w-7xl w-full mx-auto px-6 py-5 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4 z-20 text-[10.5px] text-gray-500 font-bold" id="admin-footer">
+      <footer className="w-full px-6 lg:px-10 xl:px-14 py-5 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-4 z-20 text-[10.5px] text-gray-500 font-bold" id="admin-footer">
         <div>
           <span>© 2026 VUNEX MARKET. All rights reserved.</span>
         </div>

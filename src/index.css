@@ -8,9 +8,9 @@
   
   --color-brand-blue: #1e60ff;
   --color-brand-blue-glow: rgba(30, 96, 255, 0.45);
-  --color-brand-dark: #030303;
-  --color-brand-card: #09090b;
-  --color-brand-border: rgba(255, 255, 255, 0.08);
+  --color-brand-dark: #000000;
+  --color-brand-card: #0a0a0c;
+  --color-brand-border: rgba(255, 255, 255, 0.07);
 }
 
 @layer base {
@@ -43,6 +43,15 @@
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 @keyframes pulse-glow {
   0%, 100% {
     opacity: 0.2;
@@ -69,5 +78,16 @@
   background: rgba(15, 15, 20, 0.45);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Design-matched card surface */
+.card-surface {
+  background: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+}
+
+.neon-blue {
+  box-shadow: 0 0 24px rgba(30, 96, 255, 0.35);
 }
 

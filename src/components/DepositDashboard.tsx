@@ -19,7 +19,8 @@ import {
   Headphones
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import heroBullImg from '../assets/images/vertex_hero_bull_1784320384594.jpg';
+import heroBullImg from '../assets/images/cutouts/bull.png';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
 
 interface DepositDashboardProps {
   onLogout: () => void;
@@ -234,19 +235,14 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
         {/* Left section: branding & tabs */}
         <div className="flex items-center gap-12">
           
-          {/* Logo with clean Sharp Chevron V */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate('Overview')}>
-            <div className="w-8 h-8 rounded-lg bg-white/[0.02] border border-white/10 flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-blue-500/10 rounded blur-sm" />
-              <svg className="w-5 h-5 text-white relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
-              </svg>
+          {/* Logo with Vunex brand image */}
+          <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => onNavigate('Overview')}>
+            <div className="relative w-8 h-8 flex items-center justify-center rounded-lg overflow-hidden">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
             </div>
-            
             <div className="flex flex-col text-left">
-              <span className="font-sans font-black text-sm tracking-[0.15em] text-white uppercase leading-none">Vertex</span>
-              <span className="font-sans text-[7px] tracking-[0.3em] text-gray-500 uppercase leading-none mt-1">Markets</span>
+              <span className="font-display font-bold text-[14px] tracking-wider text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[7.5px] tracking-[0.25em] text-gray-400 uppercase leading-none mt-1">Market</span>
             </div>
           </div>
 
@@ -367,15 +363,15 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
             <div className="rounded-xl border border-white/[0.08] bg-[#07070a] p-4 relative overflow-hidden flex flex-col justify-between h-44 shadow-lg">
               <div className="text-left select-none">
                 <h4 className="text-[11px] font-black text-white tracking-wide uppercase">Trade Smarter.</h4>
-                <p className="text-[10px] font-bold text-[#1e60ff] uppercase mt-0.5">Trade Vertex.</p>
+                <p className="text-[10px] font-bold text-[#1e60ff] uppercase mt-0.5">Trade Vunex.</p>
               </div>
               
               {/* High-fidelity Chrome Bull image at the bottom */}
               <div className="relative w-full h-24 mt-2 rounded-lg overflow-hidden border border-white/[0.05]">
                 <img 
                   src={heroBullImg} 
-                  alt="Vertex Bull" 
-                  className="w-full h-full object-cover object-center scale-110" 
+                  alt="Vunex Bull" 
+                  className="w-full h-full object-contain object-center p-1" 
                   referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
@@ -392,7 +388,7 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
         </aside>
 
         {/* MAIN DISPLAY WORKSPACE */}
-        <main className="flex-grow p-6 lg:p-8 overflow-y-auto flex flex-col justify-between max-w-[1440px] mx-auto w-full space-y-8">
+        <main className="flex-grow p-6 lg:p-8 overflow-y-auto flex flex-col justify-between w-full space-y-8">
           
           <div className="space-y-6">
             
@@ -413,8 +409,8 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
               <div className="relative shrink-0 w-full md:w-[380px] h-44 rounded-xl overflow-hidden border border-white/[0.08] select-none shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
                 <img 
                   src={heroBullImg} 
-                  alt="Vertex Chrome Bull" 
-                  className="w-full h-full object-cover" 
+                  alt="Vunex Chrome Bull" 
+                  className="w-full h-full object-contain p-2" 
                   referrerPolicy="no-referrer"
                 />
                 {/* Subtle vignette/glow overlay */}
@@ -807,7 +803,7 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
                       )}
                     </div>
 
-                    {/* High-Fidelity Vector QR Code with Vertex V Branding Overlay */}
+                    {/* High-Fidelity Vector QR Code with Vunex V Branding Overlay */}
                     <div className="space-y-1">
                       <label className="text-[9px] font-black text-[#5e5e6b] uppercase tracking-wider block">
                         Deposit Address ({selectedCrypto === 'USDT' ? 'TRC20' : selectedCrypto === 'BTC' ? 'Bitcoin' : 'ERC20'})
@@ -833,7 +829,7 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
 
                             {/* Center Logo Overlay V shape */}
                             <rect x="36" y="36" width="28" height="28" fill="white" rx="4" />
-                            {/* SVG Chevron 'V' Vertex Logo */}
+                            {/* SVG Chevron 'V' Vunex Logo */}
                             <path d="M42 42 L50 58 L58 42" stroke="#000" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                             <path d="M46 42 L50 50 L54 42" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" opacity="0.6" />
 
@@ -928,7 +924,7 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
                   </svg>
                 </div>
                 <div className="text-left">
-                  <h5 className="text-[11px] font-black text-white uppercase tracking-wider">Your funds are secure with Vertex</h5>
+                  <h5 className="text-[11px] font-black text-white uppercase tracking-wider">Your funds are secure with Vunex</h5>
                   <p className="text-[9px] text-[#5e5e6b] mt-0.5">We use industry-leading security protocols to protect your assets.</p>
                 </div>
               </div>
@@ -981,7 +977,7 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
 
             {/* micro disclaimer */}
             <p className="text-[8.5px] text-gray-600 font-mono text-center pt-2">
-              © 2026 Vertex Markets Global Ltd. Registered Office: 100 Bishopsgate, London EC2N 4AG. Financial instruments carry high risk.
+              © 2026 Vunex Market Global Ltd. Registered Office: 100 Bishopsgate, London EC2N 4AG. Financial instruments carry high risk.
             </p>
 
           </footer>

@@ -86,9 +86,9 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030303] text-[#f4f4f5] overflow-x-hidden antialiased">
+    <div className="min-h-screen bg-black text-[#f4f4f5] overflow-x-hidden antialiased">
       {/* Decorative top backlight glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[1px] bg-gradient-to-r from-transparent via-brand-blue/30 to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-blue/30 to-transparent pointer-events-none" />
       
       {/* Navbar overlay */}
       <Navbar 
@@ -151,31 +151,38 @@ export default function App() {
           <>
             {/* 1. Hero Landing Presentation Section */}
             <div id="trading">
-              <HeroSection onOpenDemoClick={() => handleSetView('login', 'signup')} />
+              <HeroSection
+                onOpenDemoClick={() => handleSetView('login', 'signup')}
+                onGetStartedClick={() => handleSetView('login', 'signup')}
+              />
             </div>
 
             {/* 2. Trusted Regulatory badging strip */}
             <RegulatoryBar />
 
-            {/* 3. Ticker strip with dynamic flashing prices and charts */}
+            {/* 3. Core Value Proposition Grid */}
+            <AdvantagesGrid />
+
+            {/* 4. Ticker strip with dynamic flashing prices and charts */}
             <TickerBar 
               onTickerSelect={handleTickerSelect} 
               activeSymbol={selectedTicker.symbol} 
             />
 
-            {/* 4. Core Value Proposition Grid with premium coded SVG 3D components */}
-            <AdvantagesGrid />
-
-            {/* 5. Platform tabs & Live Simulation Terminal Widget */}
+            {/* 5. Platforms showcase */}
             <div id="platforms">
               <PlatformsSection 
                 selectedTicker={selectedTicker}
                 onTickerSelect={setSelectedTicker}
+                onExploreClick={() => handleSetView('login', 'signup')}
               />
             </div>
 
             {/* 6. Ready to Elevate footer cta section */}
-            <BottomCTA onGetStartedClick={() => handleSetView('login', 'signup')} />
+            <BottomCTA
+              onGetStartedClick={() => handleSetView('login', 'signup')}
+              onDemoClick={() => handleSetView('login', 'signup')}
+            />
           </>
         )}
       </main>

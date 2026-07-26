@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
 import {
   Search,
   Plus,
@@ -503,16 +504,12 @@ export default function TradingTerminal({ onLogout, onNavigateToOverview }: Trad
         {/* Left: Brand Identity */}
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2.5 cursor-pointer" onClick={onNavigateToOverview}>
-            <div className="relative w-6 h-6 flex items-center justify-center">
-              <span className="absolute inset-0 bg-blue-500/20 rounded blur-[2px]"></span>
-              <svg className="w-4.5 h-4.5 text-white relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"/>
-              </svg>
+            <div className="relative w-6 h-6 flex items-center justify-center rounded overflow-hidden">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-bold text-xs tracking-wider text-white uppercase leading-none">Vertex</span>
-              <span className="font-sans text-[7px] tracking-[0.25em] text-gray-400 uppercase leading-none mt-1">Markets</span>
+              <span className="font-display font-bold text-xs tracking-wider text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[7px] tracking-[0.25em] text-gray-400 uppercase leading-none mt-1">Market</span>
             </div>
           </div>
 
@@ -989,7 +986,7 @@ export default function TradingTerminal({ onLogout, onNavigateToOverview }: Trad
                   <div className="flex items-center gap-2 text-[10.5px] text-gray-400 font-mono">
                     <span className="font-bold text-white">{activeTicker.symbol}</span>
                     <span>1h</span>
-                    <span>• Vertex Markets</span>
+                    <span>• Vunex Market</span>
                     <span>O: <span className="text-gray-300">1.08892</span></span>
                     <span>H: <span className="text-gray-300">1.08988</span></span>
                     <span>L: <span className="text-gray-300">1.08821</span></span>
@@ -1569,8 +1566,8 @@ export default function TradingTerminal({ onLogout, onNavigateToOverview }: Trad
           <span>Server Time: <span className="text-gray-300 font-bold">{currentTimeStr} (UTC+0)</span></span>
           <div className="flex items-center gap-1">
             <span>Data powered by</span>
-            <span className="text-blue-400 font-extrabold flex items-center gap-1">
-              <span>Vertex Liquidity Hub</span>
+              <span className="text-blue-400 font-extrabold flex items-center gap-1">
+              <span>Vunex Liquidity Hub</span>
               <span className="w-1 h-1 rounded-full bg-blue-500" />
             </span>
           </div>

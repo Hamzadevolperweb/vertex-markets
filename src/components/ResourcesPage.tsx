@@ -197,13 +197,13 @@ export default function ResourcesPage({ onGetStartedClick }: ResourcesPageProps)
       <div className="absolute bottom-20 left-1/4 w-[600px] h-[600px] bg-indigo-500/5 rounded-full blur-[160px] pointer-events-none" />
 
       {/* Main Grid Layout containing Hero Title and Right-side Cyber Graphic */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16 relative z-10 pt-4">
+      <div className="w-full px-6 lg:px-10 xl:px-14 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16 relative z-10 pt-4">
         
         {/* --- LEFT HAND SIDE: HEADER CONTENT --- */}
         <div className="lg:col-span-6 text-left space-y-6">
           <div className="inline-flex items-center gap-2 bg-brand-blue/10 border border-brand-blue/20 text-brand-blue px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase">
             <Sparkles className="w-3.5 h-3.5" />
-            Vertex Knowledge Base
+            Vunex Knowledge Base
           </div>
 
           <h1 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1]">
@@ -214,7 +214,7 @@ export default function ResourcesPage({ onGetStartedClick }: ResourcesPageProps)
           </h1>
 
           <p className="text-gray-400 font-sans text-base sm:text-lg max-w-xl leading-relaxed">
-            Learn, grow and master the markets with Vunex Markets resources. Master advanced indicators, market trends, and risk management strategies.
+            Learn, grow and master the markets with Vunex Market resources. Master advanced indicators, market trends, and risk management strategies.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -427,7 +427,7 @@ export default function ResourcesPage({ onGetStartedClick }: ResourcesPageProps)
       </div>
 
       {/* --- SECTION 2: LIVE RESOURCE SEARCH BAR --- */}
-      <div className="max-w-7xl mx-auto mb-12 relative z-10">
+      <div className="w-full px-6 lg:px-10 xl:px-14 mb-12 relative z-10">
         <div className="max-w-md bg-zinc-950/70 border border-zinc-800/80 rounded-xl p-1.5 flex items-center gap-3 shadow-lg shadow-black/40">
           <div className="pl-3.5 text-zinc-500">
             <Search className="w-5 h-5" />
@@ -451,7 +451,7 @@ export default function ResourcesPage({ onGetStartedClick }: ResourcesPageProps)
       </div>
 
       {/* --- SECTION 3: CORE BENTO RESOURCES GRID (5-COLUMN ALIGNED LIKE USER IMAGE) --- */}
-      <div id="resources-catalog-grid" className="max-w-7xl mx-auto relative z-10 mb-16">
+      <div id="resources-catalog-grid" className="w-full px-6 lg:px-10 xl:px-14 relative z-10 mb-16">
         {filteredItems.length === 0 ? (
           <div className="text-center py-16 border border-dashed border-zinc-800/60 rounded-2xl bg-zinc-950/20">
             <HelpCircle className="w-12 h-12 text-zinc-600 mx-auto mb-4 animate-bounce" />
@@ -506,7 +506,7 @@ export default function ResourcesPage({ onGetStartedClick }: ResourcesPageProps)
       </div>
 
       {/* --- SECTION 4: NEWSLETTER GLASS SUBSCRIPTION CONTAINER (From image) --- */}
-      <div className="max-w-7xl mx-auto mb-16 relative z-10">
+      <div className="w-full px-6 lg:px-10 xl:px-14 mb-16 relative z-10">
         <div className="relative overflow-hidden bg-gradient-to-r from-[#060609] to-[#0b0c12] border border-white/[0.05] rounded-xl p-8 sm:p-10 shadow-2xl shadow-black">
           
           {/* Internal background glow effects */}
@@ -566,7 +566,7 @@ export default function ResourcesPage({ onGetStartedClick }: ResourcesPageProps)
       </div>
 
       {/* --- SECTION 5: TRUSTED REGULATORY BAR BADGING (Identical to landing) --- */}
-      <div className="max-w-7xl mx-auto border-t border-white/[0.04] pt-12 pb-6 text-center relative z-10">
+      <div className="w-full px-6 lg:px-10 xl:px-14 border-t border-white/[0.04] pt-12 pb-6 text-center relative z-10">
         <p className="text-gray-500 font-sans text-xs uppercase tracking-[0.25em] font-bold mb-8">
           Trusted. Regulated. Secure.
         </p>

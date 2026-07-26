@@ -31,6 +31,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import vunexLogo from '../assets/images/cutouts/logo_official.png';
 
 interface HistoryDashboardProps {
   onLogout: () => void;
@@ -249,17 +250,13 @@ export default function HistoryDashboard({ onLogout, onNavigate }: HistoryDashbo
         <div className="flex items-center gap-12">
           {/* Logo with clean Sharp Chevron V */}
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate('Overview')}>
-            <div className="w-8 h-8 rounded-lg bg-white/[0.02] border border-white/10 flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-blue-500/10 rounded blur-sm" />
-              <svg className="w-5 h-5 text-white relative z-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 4L12 20L20 4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M8 4L12 12L16 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6"/>
-              </svg>
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 flex items-center justify-center relative">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
             </div>
             
             <div className="flex flex-col text-left">
-              <span className="font-sans font-black text-sm tracking-[0.15em] text-white uppercase leading-none">Vertex</span>
-              <span className="font-sans text-[7px] tracking-[0.3em] text-gray-500 uppercase leading-none mt-1">Markets</span>
+              <span className="font-sans font-black text-sm tracking-[0.15em] text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[7px] tracking-[0.3em] text-gray-500 uppercase leading-none mt-1">Market</span>
             </div>
           </div>
 
@@ -338,7 +335,7 @@ export default function HistoryDashboard({ onLogout, onNavigate }: HistoryDashbo
                   >
                     <div className="px-4 py-2 border-b border-white/[0.05] mb-2 select-none">
                       <span className="text-[10px] text-gray-500 block uppercase">Demo Trading Sandbox</span>
-                      <span className="text-white block truncate text-[11px] mt-0.5">trader@vertexmarkets.com</span>
+                      <span className="text-white block truncate text-[11px] mt-0.5">trader@vunexmarket.com</span>
                     </div>
                     <button 
                       onClick={() => {
@@ -712,8 +709,8 @@ export default function HistoryDashboard({ onLogout, onNavigate }: HistoryDashbo
             {/* LEFT AREA: METRICS ROW + TABLE (8 columns) */}
             <div className="xl:col-span-7 space-y-6">
               
-              {/* METRIC CARDS ROW (4 cards matching Page 9 exactly) */}
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              {/* METRIC CARDS ROW (5 cards matching Page 9 exactly) */}
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
                 
                 {/* 1. Total Trades */}
                 <div className="bg-[#07070a] border border-white/[0.05] rounded-xl p-4 text-left flex flex-col justify-between h-28 relative overflow-hidden group hover:border-[#1e60ff]/20 transition-all">
@@ -787,6 +784,25 @@ export default function HistoryDashboard({ onLogout, onNavigate }: HistoryDashbo
                   
                   <span className="text-[9.5px] font-bold text-emerald-400 mt-1 block">
                     +0.35% <span className="text-gray-500 font-medium">vs Apr 19 - May 16</span>
+                  </span>
+                </div>
+
+                {/* 5. Total Volume */}
+                <div className="bg-[#07070a] border border-white/[0.05] rounded-xl p-4 text-left flex flex-col justify-between h-28 relative overflow-hidden group hover:border-[#1e60ff]/20 transition-all">
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/2 rounded-full blur-xl pointer-events-none" />
+                  <span className="text-[10px] text-gray-500 uppercase font-black tracking-wider block">Total Volume</span>
+                  
+                  <div className="flex items-end justify-between mt-1">
+                    <span className="text-[17px] font-black tracking-tight text-white font-sans">
+                      ${stats.totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <svg className="w-16 h-8 text-[#1e60ff]" viewBox="0 0 100 40" fill="none">
+                      <path d="M0 20 Q15 5 30 15 T60 30 T80 5 T100 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  
+                  <span className="text-[9.5px] font-bold text-emerald-400 mt-1 block">
+                    +22.1% <span className="text-gray-500 font-medium">vs Apr 19 - May 16</span>
                   </span>
                 </div>
 
@@ -997,27 +1013,8 @@ export default function HistoryDashboard({ onLogout, onNavigate }: HistoryDashbo
             <div className="xl:col-span-3 space-y-6 flex flex-col justify-between">
               
               <div className="space-y-6">
-                
-                {/* CARD 1: Total Volume Card (Placed at the very top of right sidebar, matching image level) */}
-                <div className="bg-[#07070a] border border-white/[0.05] rounded-xl p-4 text-left flex flex-col justify-between h-28 relative overflow-hidden group hover:border-[#1e60ff]/20 transition-all shadow-xl">
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/2 rounded-full blur-xl pointer-events-none" />
-                  <span className="text-[10px] text-gray-500 uppercase font-black tracking-wider block">Total Volume</span>
-                  
-                  <div className="flex items-end justify-between mt-1">
-                    <span className="text-[20px] font-black tracking-tight text-white font-sans">
-                      ${stats.totalVolume.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                    <svg className="w-16 h-8 text-[#1e60ff]" viewBox="0 0 100 40" fill="none">
-                      <path d="M0 20 Q15 5 30 15 T60 30 T80 5 T100 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                  
-                  <span className="text-[9.5px] font-bold text-emerald-400 mt-1 block">
-                    +22.1% <span className="text-gray-500 font-medium">vs Apr 19 - May 16</span>
-                  </span>
-                </div>
 
-                {/* CARD 2: PERFORMANCE SUMMARY */}
+                {/* PERFORMANCE SUMMARY */}
                 <div className="rounded-2xl border border-white/[0.05] bg-[#07070a] p-5 text-left space-y-4 shadow-2xl relative overflow-hidden">
                   
                   <div className="flex flex-col">
@@ -1249,7 +1246,7 @@ export default function HistoryDashboard({ onLogout, onNavigate }: HistoryDashbo
                   </div>
                   <div>
                     <h3 className="text-base font-extrabold text-white tracking-tight">Performance Analytics</h3>
-                    <p className="text-[10px] text-gray-500 uppercase font-black tracking-wider font-mono">Vertex Advanced Reports v2.8</p>
+                    <p className="text-[10px] text-gray-500 uppercase font-black tracking-wider font-mono">Vunex Advanced Reports v2.8</p>
                   </div>
                 </div>
 
