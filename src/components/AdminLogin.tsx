@@ -114,11 +114,11 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
             onClick={onBackToHome}
             className="flex items-center gap-2.5 group cursor-pointer text-left focus:outline-none"
           >
-            <img 
-              src={logoImg} 
-              alt="VUNEX MARKET" 
-              className="h-9 w-auto object-contain drop-shadow-[0_0_8px_rgba(30,96,255,0.3)] group-hover:drop-shadow-[0_0_12px_rgba(30,96,255,0.5)] transition-all"
-            />
+              <img
+                src={logoImg}
+                alt="VUNEX MARKET"
+                className="h-11 w-auto object-contain brightness-[1.4] contrast-[1.15] drop-shadow-[0_0_12px_rgba(30,96,255,0.45)] group-hover:drop-shadow-[0_0_16px_rgba(30,96,255,0.6)] transition-all"
+              />
           </button>
         </div>
 

@@ -432,12 +432,12 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
           
           {/* Logo Section */}
           <div className="flex items-center gap-2.5 px-1.5 py-1">
-            <div className="relative w-8 h-8 flex items-center justify-center rounded-lg overflow-hidden">
-              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-cover" />
+            <div className="relative w-10 h-10 flex items-center justify-center">
+              <img src={vunexLogo} alt="Vunex Market" className="w-full h-full object-contain brightness-[1.35] drop-shadow-[0_0_10px_rgba(30,96,255,0.4)]" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-bold text-[17px] tracking-wider text-white uppercase leading-none">Vunex</span>
-              <span className="font-sans text-[8.5px] tracking-[0.28em] text-gray-400 uppercase leading-none mt-1">Market</span>
+              <span className="font-display font-bold text-[18px] tracking-wider text-white uppercase leading-none">Vunex</span>
+              <span className="font-sans text-[9px] tracking-[0.28em] text-brand-blue uppercase leading-none mt-1 font-semibold">Market</span>
             </div>
           </div>
 

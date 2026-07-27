@@ -21,7 +21,7 @@ import {
   Shield,
 } from 'lucide-react';
 import BrandLogo from './BrandLogo';
-import { assetBull, assetGlassCharts, assetPedestal } from '../assets/images';
+import HeroVisual from './HeroVisual';
 
 const TRANSLATIONS = {
   EN: {
@@ -249,93 +249,11 @@ const COUNTRIES = [
   'Japan',
 ];
 
-/* ---------- Floating price pill shown on the hero bull scene ---------- */
-function PricePill({
-  pair,
-  price,
-  change,
-  className,
-}: {
-  pair: string;
-  price: string;
-  change: string;
-  className?: string;
-}) {
-  const isPositive = change.startsWith('+');
-  return (
-    <div
-      className={`absolute z-20 bg-black/70 backdrop-blur-md border border-white/10 rounded-lg px-3 py-1.5 pointer-events-none select-none ${className}`}
-    >
-      <p className="text-[9px] text-gray-400 font-semibold tracking-wider uppercase leading-none">
-        {pair}
-      </p>
-      <div className="flex items-baseline gap-1.5 mt-0.5">
-        <span className="text-[13px] font-bold text-white leading-none">
-          {price}
-        </span>
-      </div>
-      <span
-        className={`text-[9px] font-semibold leading-none ${isPositive ? 'text-emerald-400' : 'text-rose-400'}`}
-      >
-        {change}
-      </span>
-    </div>
-  );
-}
-
-/* ---------- Composed hero bull scene with pedestal + glass + labels ---------- */
+/* ---------- Hero visual — pixel-matched design SVG ---------- */
 function HeroBullScene({ compact = false }: { compact?: boolean }) {
   return (
-    <div
-      className={`relative w-full ${compact ? 'max-w-lg' : 'max-w-xl'} mx-auto lg:mx-0`}
-    >
-      <div
-        className={`relative ${compact ? 'aspect-[5/4]' : 'aspect-[4/3]'}`}
-      >
-        <div className="absolute bottom-[4%] left-1/2 -translate-x-1/2 w-[55%] h-[18%] bg-[#1e60ff]/20 rounded-full blur-[50px] pointer-events-none" />
-
-        <img
-          src={assetGlassCharts}
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-[1] opacity-60"
-          draggable={false}
-        />
-        <img
-          src={assetPedestal}
-          alt=""
-          className="absolute bottom-[1%] left-1/2 -translate-x-1/2 w-[55%] object-contain pointer-events-none select-none z-[2]"
-          draggable={false}
-        />
-
-        <motion.img
-          initial={{ opacity: 0, scale: 0.97, y: 16 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-          src={assetBull}
-          alt="Trading bull"
-          className="relative z-[3] w-full h-full object-contain object-center select-none pointer-events-none"
-          draggable={false}
-        />
-
-        <PricePill
-          pair="EURUSD"
-          price="1.08945"
-          change="+0.47%"
-          className="top-[10%] left-[38%] sm:left-[42%]"
-        />
-        <PricePill
-          pair="XAUUSD"
-          price="2,394.65"
-          change="+0.62%"
-          className="top-[38%] left-[2%] sm:left-[4%]"
-        />
-        <PricePill
-          pair="GBPUSD"
-          price="1.27482"
-          change="+0.35%"
-          className="top-[42%] right-[2%] sm:right-[4%]"
-        />
-      </div>
+    <div className={`w-full ${compact ? 'max-w-lg' : 'max-w-xl'} mx-auto lg:mx-0`}>
+      <HeroVisual className={compact ? '!max-w-lg' : '!max-w-xl'} />
     </div>
   );
 }

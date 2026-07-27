@@ -117,7 +117,7 @@ export default function App() {
         activeLink={view === 'markets' ? 'Markets' : view === 'resources' ? 'Resources' : view === 'company' ? 'Company' : view === 'partners' ? 'Partners' : view === 'landing' ? 'Trading' : ''}
       />
 
-      <main className="relative pt-20">
+      <main className="relative pt-[72px]">
         {view === 'markets' ? (
           <MarketsPage 
             onGetStartedClick={() => handleSetView('login', 'signup')}
@@ -163,11 +163,8 @@ export default function App() {
             {/* 3. Core Value Proposition Grid */}
             <AdvantagesGrid />
 
-            {/* 4. Ticker strip with dynamic flashing prices and charts */}
-            <TickerBar 
-              onTickerSelect={handleTickerSelect} 
-              activeSymbol={selectedTicker.symbol} 
-            />
+            {/* 4. Market ticker cards */}
+            <TickerBar />
 
             {/* 5. Platforms showcase */}
             <div id="platforms">

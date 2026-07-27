@@ -46,14 +46,14 @@ export default function Navbar({
       initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/[0.05]"
+      className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/[0.06]"
       id="main-navbar"
     >
-      <div className="w-full px-6 lg:px-10 xl:px-14">
-        <div className="flex items-center justify-between h-[68px]">
+      <div className="max-w-[1320px] mx-auto px-6 lg:px-10">
+        <div className="flex items-center justify-between h-[72px]">
           <BrandLogo onClick={onLogoClick} variant="mark" />
 
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-9">
             {navLinks.map((link) => {
               const active = activeLink === link.name;
               return (
@@ -62,12 +62,12 @@ export default function Navbar({
                   type="button"
                   onClick={link.onClick}
                   className={`relative text-[13px] font-medium tracking-wide transition-colors cursor-pointer py-1 ${
-                    active ? 'text-white' : 'text-white/65 hover:text-white'
+                    active ? 'text-white' : 'text-white/55 hover:text-white'
                   }`}
                 >
                   {link.name}
                   {active && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-brand-blue rounded-full" />
+                    <span className="absolute -bottom-1.5 left-0 right-0 h-[2px] bg-brand-blue rounded-full" />
                   )}
                 </button>
               );
@@ -78,7 +78,7 @@ export default function Navbar({
             <button
               type="button"
               onClick={onAdminClick}
-              className="text-[11px] text-white/30 hover:text-white/60 px-1.5 py-2 cursor-pointer"
+              className="text-[11px] text-white/25 hover:text-white/50 px-1 py-2 cursor-pointer"
             >
               Admin
             </button>
@@ -86,7 +86,7 @@ export default function Navbar({
               id="btn-login"
               type="button"
               onClick={onLoginClick}
-              className="text-[13px] font-medium text-white border border-white/30 hover:border-white/55 px-5 py-2 rounded-lg transition-colors cursor-pointer"
+              className="text-[13px] font-medium text-white border border-white/30 hover:border-white/55 px-5 h-10 rounded-lg transition-colors cursor-pointer"
             >
               Login
             </button>
@@ -94,7 +94,7 @@ export default function Navbar({
               id="btn-get-started"
               type="button"
               onClick={onGetStartedClick}
-              className="text-[13px] font-semibold bg-brand-blue hover:bg-[#2a6aff] text-white px-5 py-2 rounded-lg inline-flex items-center gap-2 shadow-[0_0_22px_rgba(30,96,255,0.35)] transition-all cursor-pointer"
+              className="text-[13px] font-semibold bg-brand-blue hover:bg-[#2a6aff] text-white px-5 h-10 rounded-lg inline-flex items-center gap-2 shadow-[0_0_24px_rgba(30,96,255,0.4)] transition-all cursor-pointer"
             >
               Get Started
               <ArrowRight className="w-3.5 h-3.5" />

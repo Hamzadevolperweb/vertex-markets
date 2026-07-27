@@ -501,7 +501,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
               className="absolute inset-y-0 left-0 w-72 bg-[#030303] border-r border-white/10 p-4 flex flex-col"
             >
               <div className="flex items-center justify-between pb-4 mb-2 border-b border-white/[0.06]">
-                <img src={logoImg} alt="VUNEX MARKET" className="h-7 w-auto object-contain" />
+                <img src={logoImg} alt="VUNEX MARKET" className="h-9 w-auto object-contain brightness-[1.4] contrast-[1.15]" />
                 <button type="button" onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 rounded-lg border border-white/10 text-gray-400 cursor-pointer">
                   <X className="w-4 h-4" />
                 </button>
@@ -526,7 +526,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
         <div className="flex flex-col min-h-0 flex-1">
           <div className="px-5 py-5 border-b border-white/[0.04] flex items-center shrink-0">
             <button type="button" onClick={() => navigateTo('dashboard')} className="cursor-pointer">
-              <img src={logoImg} alt="VUNEX MARKET" className="h-8 w-auto object-contain" />
+              <img src={logoImg} alt="VUNEX MARKET" className="h-10 w-auto object-contain brightness-[1.4] contrast-[1.15] drop-shadow-[0_0_10px_rgba(30,96,255,0.35)]" />
             </button>
           </div>
           <div className="p-4 overflow-y-auto flex-1 min-h-0 overscroll-contain">
@@ -815,20 +815,20 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                 onMouseEnter={() => setHoveredChart(true)}
                 onMouseLeave={() => setHoveredChart(false)}
               >
-                <div className="absolute left-0 top-0 bottom-6 z-10 w-8 flex flex-col justify-between py-3 pl-1 pr-0.5 bg-[#07070a] border-r border-white/[0.06] pointer-events-none">
+                <div className="absolute left-0 top-0 bottom-6 z-10 w-6 flex flex-col justify-between py-3 pl-0.5 pr-0 bg-[#07070a] border-r border-white/[0.06] pointer-events-none">
                   {['$2.5M', '$2.0M', '$1.5M', '$1.0M', '$500K', '$0'].map((l) => (
-                    <span key={l} className="text-[8px] text-gray-500 font-medium leading-none text-left whitespace-nowrap">
+                    <span key={l} className="text-[7.5px] text-gray-500 font-medium leading-none text-left whitespace-nowrap tracking-tight">
                       {l}
                     </span>
                   ))}
                 </div>
-                <div className="absolute left-8 right-0 top-3 bottom-7 flex flex-col justify-between pointer-events-none">
+                <div className="absolute left-6 right-0 top-3 bottom-7 flex flex-col justify-between pointer-events-none">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} className="h-px w-full bg-white/[0.05]" />
                   ))}
                 </div>
                 <svg
-                  className="absolute left-8 right-0 top-0 bottom-6 w-[calc(100%-2rem)] h-[calc(100%-1.5rem)]"
+                  className="absolute left-6 right-0 top-0 bottom-6 w-[calc(100%-1.5rem)] h-[calc(100%-1.5rem)]"
                   viewBox="0 0 600 180"
                   preserveAspectRatio="none"
                 >
@@ -856,7 +856,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
                     </>
                   )}
                 </svg>
-                <div className="absolute bottom-1.5 left-9 right-2 flex justify-between text-[9px] text-gray-600 font-medium">
+                <div className="absolute bottom-1.5 left-6 right-2 flex justify-between text-[9px] text-gray-600 font-medium">
                   {['May 15', 'May 20', 'May 25', 'May 30', 'Jun 5', 'Jun 10'].map((d) => (
                     <span key={d}>{d}</span>
                   ))}
