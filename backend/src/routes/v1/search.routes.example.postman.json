@@ -1,0 +1,364 @@
+{
+  "info": {
+    "name": "Vertex Markets - Search API",
+    "description": "Phase 13: Global Search, Pagination & Filtering\n\nEndpoints for global and module-specific search with full filtering, sorting, and pagination support.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Global Search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search?q={{query}}&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search"],
+          "query": [
+            { "key": "q", "value": "{{query}}", "description": "Search query" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Perform a global search across all modules. Results are grouped by module."
+      }
+    },
+    {
+      "name": "Global Search with Filters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search?q={{query}}&active=true&status=published&dateFrom=2024-01-01T00:00:00.000Z&sortBy=createdAt&sortOrder=desc&page=1&limit=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search"],
+          "query": [
+            { "key": "q", "value": "{{query}}" },
+            { "key": "active", "value": "true" },
+            { "key": "status", "value": "published" },
+            { "key": "dateFrom", "value": "2024-01-01T00:00:00.000Z" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" }
+          ]
+        },
+        "description": "Global search with active filter, status filter, and date range."
+      }
+    },
+    {
+      "name": "Search Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/users?q={{query}}&active=true&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "users"],
+          "query": [
+            { "key": "q", "value": "{{query}}" },
+            { "key": "active", "value": "true" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search users by email, name, phone, or role."
+      }
+    },
+    {
+      "name": "Search CMS",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/cms?q={{query}}&active=true&page=1&limit=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "cms"],
+          "query": [
+            { "key": "q", "value": "{{query}}" },
+            { "key": "active", "value": "true" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" }
+          ]
+        },
+        "description": "Search CMS sections."
+      }
+    },
+    {
+      "name": "Search Markets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/markets?q=forex&active=true&type=forex&page=1&limit=20&sortBy=order&sortOrder=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "markets"],
+          "query": [
+            { "key": "q", "value": "forex" },
+            { "key": "active", "value": "true" },
+            { "key": "type", "value": "forex" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "order" },
+            { "key": "sortOrder", "value": "asc" }
+          ]
+        },
+        "description": "Search markets by title, slug, description, or type."
+      }
+    },
+    {
+      "name": "Search Platforms",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/platforms?q=mt&active=true&page=1&limit=20&sortBy=title&sortOrder=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "platforms"],
+          "query": [
+            { "key": "q", "value": "mt" },
+            { "key": "active", "value": "true" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "title" },
+            { "key": "sortOrder", "value": "asc" }
+          ]
+        },
+        "description": "Search trading platforms by title, slug, or description."
+      }
+    },
+    {
+      "name": "Search Blog",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/blog?q=trading&status=published&page=1&limit=20&sortBy=publishedAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "blog"],
+          "query": [
+            { "key": "q", "value": "trading" },
+            { "key": "status", "value": "published" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "publishedAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search blog posts by title, slug, excerpt, content, or author."
+      }
+    },
+    {
+      "name": "Search Contact (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/contact?q=&status=new&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "contact"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "status", "value": "new" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search contact requests (admin only). Requires JWT with Admin role."
+      }
+    },
+    {
+      "name": "Search Newsletter (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/newsletter?q=&status=subscribed&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "newsletter"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "status", "value": "subscribed" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search newsletter subscribers (admin only). Requires JWT with Admin role."
+      }
+    },
+    {
+      "name": "Search Careers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/careers?q=developer&status=open&department=engineering&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "careers"],
+          "query": [
+            { "key": "q", "value": "developer" },
+            { "key": "status", "value": "open" },
+            { "key": "department", "value": "engineering" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search career jobs by title, department, location, or description."
+      }
+    },
+    {
+      "name": "Search Partners (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/partners?q=&partnerType=Affiliate%20Partner&status=approved&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "partners"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "partnerType", "value": "Affiliate Partner" },
+            { "key": "status", "value": "approved" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search partners by name, company, type, or status (admin only)."
+      }
+    },
+    {
+      "name": "Search Uploads (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{authToken}}", "type": "string" }]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/uploads?q=image&category=blog&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "uploads"],
+          "query": [
+            { "key": "q", "value": "image" },
+            { "key": "category", "value": "blog" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Search uploads by file name, category, or mime type (admin only)."
+      }
+    },
+    {
+      "name": "Pagination Example",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/blog?q=&status=published&page=2&limit=5&sortBy=publishedAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "blog"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "status", "value": "published" },
+            { "key": "page", "value": "2" },
+            { "key": "limit", "value": "5" },
+            { "key": "sortBy", "value": "publishedAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Example demonstrating pagination: page 2 with 5 items per page."
+      }
+    },
+    {
+      "name": "Date Range Example",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/blog?q=&status=published&dateFrom=2024-06-01T00:00:00.000Z&dateTo=2024-12-31T23:59:59.999Z&page=1&limit=20&sortBy=publishedAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "blog"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "status", "value": "published" },
+            { "key": "dateFrom", "value": "2024-06-01T00:00:00.000Z" },
+            { "key": "dateTo", "value": "2024-12-31T23:59:59.999Z" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "publishedAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        },
+        "description": "Example demonstrating date range filtering."
+      }
+    },
+    {
+      "name": "Multiple Statuses Example",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/search/partners?status=pending,under_review&page=1&limit=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search", "partners"],
+          "query": [
+            { "key": "status", "value": "pending,under_review" },
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" }
+          ]
+        },
+        "description": "Example demonstrating filtering by multiple statuses using comma-separated values."
+      }
+    }
+  ]
+}
+

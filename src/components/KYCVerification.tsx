@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Check, 
   User, 
@@ -29,12 +29,16 @@ import {
   TrendingUp,
   BarChart3,
   Award,
-  Megaphone
+  Megaphone,
+  Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import vunexLogo from '../assets/images/cutouts/logo_official.png';
 import shieldAsset from '../assets/images/cutouts/shield.png';
 import bullAsset from '../assets/images/cutouts/bull.png';
+import { startKyc, getMyKycStatus } from '../api/kyc';
+import { ApiError } from '../api/client';
+import { useAuth } from '../auth/AuthContext';
 
 interface KYCVerificationProps {
   onLogout: () => void;
@@ -42,13 +46,14 @@ interface KYCVerificationProps {
 }
 
 export default function KYCVerification({ onLogout, onNavigate }: KYCVerificationProps) {
+  const { user } = useAuth();
   // Personal Details state
   const [personalDetails, setPersonalDetails] = useState({
     fullName: 'John Michael Trader',
     dob: '15 May 1988',
     nationality: 'United Kingdom',
     phone: '+44 7700 900123',
-    email: 'john.trader@email.com'
+    email: user?.email || 'john.trader@email.com'
   });
   
   const [isEditingDetails, setIsEditingDetails] = useState(false);
@@ -64,12 +69,55 @@ export default function KYCVerification({ onLogout, onNavigate }: KYCVerificatio
 
   // Status badges
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [kycStatus, setKycStatus] = useState<string>('not_started');
+  const [kycStarting, setKycStarting] = useState(false);
+  const [kycAccessToken, setKycAccessToken] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getMyKycStatus()
+      .then((s) => {
+        if (!cancelled && s?.status) setKycStatus(s.status);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const triggerToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3000);
+  };
+
+  const handleStartProviderKyc = async () => {
+    setKycStarting(true);
+    try {
+      const session = await startKyc();
+      setKycAccessToken(session.accessToken);
+      setKycStatus('pending');
+      try {
+        const { submitTradingKyc } = await import('../api/trading');
+        await submitTradingKyc({
+          documentType: 'passport',
+          documentUrl: 'provider://session',
+          selfieUrl: 'provider://selfie',
+        });
+      } catch {
+        // trading KYC table optional if profile missing
+      }
+      triggerToast(
+        session.simulated
+          ? 'KYC session created (provider sandbox simulated). Continue local steps.'
+          : 'KYC provider session started. Complete identity checks below.',
+      );
+    } catch (err) {
+      triggerToast(err instanceof ApiError ? err.message : 'Could not start KYC session');
+    } finally {
+      setKycStarting(false);
+    }
   };
 
   const handleEditDetailsSave = (e: React.FormEvent) => {
@@ -284,6 +332,25 @@ export default function KYCVerification({ onLogout, onNavigate }: KYCVerificatio
           <p className="text-[11px] sm:text-xs text-gray-500 font-semibold mt-1">
             Help us verify your identity. This ensures a secure trading experience and full platform access.
           </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-white/[0.06] bg-[#07070a]/80 p-4">
+          <div>
+            <p className="text-xs font-bold text-white">Identity provider session</p>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Status: <span className="text-blue-400 font-semibold uppercase">{kycStatus.replace('_', ' ')}</span>
+              {kycAccessToken ? ' · Token issued' : ''}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={handleStartProviderKyc}
+            disabled={kycStarting}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#1e60ff] hover:bg-blue-600 disabled:opacity-60 text-white text-xs font-bold cursor-pointer"
+          >
+            {kycStarting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Shield className="w-3.5 h-3.5" />}
+            {kycStarting ? 'Starting…' : 'Start KYC with provider'}
+          </button>
         </div>
 
         {/* 5-STEP HORIZONTAL STEPPER - Exact Match to Screenshot */}

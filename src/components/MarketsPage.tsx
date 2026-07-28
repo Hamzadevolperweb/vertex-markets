@@ -1,4 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
+import { fetchMarkets } from '../api/markets';
+import type { MarketItem } from '../api/types';
+import { fetchQuotes } from '../api/marketData';
+import PriceChart from './charts/PriceChart';
+import { useLiveMarket } from '../hooks/useLiveMarket';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Search, 
@@ -23,6 +28,8 @@ import { Ticker } from '../types';
 interface MarketsPageProps {
   onGetStartedClick: () => void;
   onTradeClick: (ticker: Ticker) => void;
+  activeFilter?: string;
+  onFilterChange?: (filter: string) => void;
 }
 
 // Full rich dataset for different market assets
@@ -92,12 +99,106 @@ const generateCandlesticks = (basePrice: number, isPositive: boolean, timeframe:
   return list;
 };
 
-export default function MarketsPage({ onGetStartedClick, onTradeClick }: MarketsPageProps) {
+type MarketFilter = 'Overview' | 'Forex' | 'Crypto' | 'Stocks' | 'Indices' | 'Commodities';
+
+const MARKET_FILTERS: MarketFilter[] = [
+  'Overview',
+  'Forex',
+  'Crypto',
+  'Stocks',
+  'Indices',
+  'Commodities',
+];
+
+export default function MarketsPage({
+  onGetStartedClick,
+  onTradeClick,
+  activeFilter = 'Overview',
+  onFilterChange,
+}: MarketsPageProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'Overview' | 'Forex' | 'Crypto' | 'Stocks' | 'Indices' | 'Commodities'>('Overview');
+  const activeTab = (MARKET_FILTERS.includes(activeFilter as MarketFilter)
+    ? activeFilter
+    : 'Overview') as MarketFilter;
+  const setActiveTab = (tab: MarketFilter) => onFilterChange?.(tab);
+  const [marketTickers, setMarketTickers] = useState(ALL_MARKETS_TICKERS);
   const [selectedAsset, setSelectedAsset] = useState(ALL_MARKETS_TICKERS[0]);
   const [activeTimeframe, setActiveTimeframe] = useState<'1D' | '1W' | '1M' | '3M' | '6M' | '1Y' | 'All'>('1D');
   const [hoveredCandle, setHoveredCandle] = useState<any>(null);
+  const [apiStatus, setApiStatus] = useState<'loading' | 'live' | 'fallback'>('loading');
+  const { candles: liveCandles, quote: liveQuote, status: chartStatus } = useLiveMarket(
+    selectedAsset.symbol,
+    activeTimeframe,
+  );
+
+  useEffect(() => {
+    if (!liveQuote || liveQuote.error) return;
+    setSelectedAsset((prev) => ({
+      ...prev,
+      price: liveQuote.price || prev.price,
+      change: liveQuote.change || prev.change,
+    }));
+    setMarketTickers((prev) =>
+      prev.map((t) =>
+        t.symbol === liveQuote.symbol
+          ? { ...t, price: liveQuote.price || t.price, change: liveQuote.change || t.change }
+          : t,
+      ),
+    );
+  }, [liveQuote]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMarkets() {
+      try {
+        const data = await fetchMarkets({ limit: 100 });
+        if (cancelled) return;
+
+        const enriched = data.items.map((item: MarketItem) => {
+          const symbol = (item.title || item.slug || '').toUpperCase();
+          const local = ALL_MARKETS_TICKERS.find(
+            (t) => t.symbol === symbol || t.symbol.toLowerCase() === item.slug,
+          );
+          return {
+            symbol,
+            name: item.description || local?.name || item.title,
+            price: local?.price ?? 0,
+            change: local?.change ?? 0,
+            sparkline: local?.sparkline ?? [0, 0, 0, 0, 0, 0, 0],
+            category: (item.type as (typeof ALL_MARKETS_TICKERS)[0]['category']) || 'Forex',
+          };
+        });
+
+        if (enriched.length > 0) {
+          setMarketTickers(enriched);
+          setSelectedAsset(enriched[0]);
+          setApiStatus('live');
+          // hydrate live quotes in background
+          fetchQuotes(enriched.slice(0, 12).map((e) => e.symbol))
+            .then((quotes) => {
+              if (cancelled) return;
+              setMarketTickers((prev) =>
+                prev.map((t) => {
+                  const q = quotes.find((x) => x.symbol === t.symbol && !x.error);
+                  return q ? { ...t, price: q.price || t.price, change: q.change || t.change } : t;
+                }),
+              );
+            })
+            .catch(() => undefined);
+        } else {
+          setApiStatus('fallback');
+        }
+      } catch {
+        if (!cancelled) setApiStatus('fallback');
+      }
+    }
+
+    loadMarkets();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Generate candle data whenever selected asset or timeframe changes
   const chartCandles = useMemo(() => {
@@ -112,27 +213,27 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
 
   // Filtered tickers list based on category and search query
   const filteredTickers = useMemo(() => {
-    return ALL_MARKETS_TICKERS.filter((t) => {
+    return marketTickers.filter((t) => {
       const matchesCategory = activeTab === 'Overview' || t.category === activeTab;
       const matchesSearch = t.symbol.toLowerCase().includes(searchQuery.toLowerCase()) || 
                             t.name.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [activeTab, searchQuery]);
+  }, [activeTab, searchQuery, marketTickers]);
 
   // Top Gainers: Sort ascending or descending based on change, taking positive ones
   const topGainers = useMemo(() => {
-    return [...ALL_MARKETS_TICKERS]
+    return [...marketTickers]
       .sort((a, b) => b.change - a.change)
       .slice(0, 5);
-  }, []);
+  }, [marketTickers]);
 
   // Top Losers: taking lowest changes
   const topLosers = useMemo(() => {
-    return [...ALL_MARKETS_TICKERS]
+    return [...marketTickers]
       .sort((a, b) => a.change - b.change)
       .slice(0, 5);
-  }, []);
+  }, [marketTickers]);
 
   // Generate a premium holographic 3D circular candlestick dataset for the decorative right-hand section
   const holographicCandles = useMemo(() => {
@@ -379,6 +480,17 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
                 <SlidersHorizontal className="w-4 h-4" />
                 <span>Filters</span>
               </button>
+              <span
+                className={`self-center text-[10px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-md border ${
+                  apiStatus === 'live'
+                    ? 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10'
+                    : apiStatus === 'loading'
+                      ? 'text-gray-400 border-white/10 bg-white/5'
+                      : 'text-amber-400 border-amber-500/30 bg-amber-500/10'
+                }`}
+              >
+                {apiStatus === 'live' ? 'API live' : apiStatus === 'loading' ? 'Loading' : 'Offline'}
+              </span>
             </div>
           </div>
 
@@ -661,7 +773,7 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
 
         {/* ================= CATEGORY NAVIGATION TABS ================= */}
         <div className="flex overflow-x-auto pb-4 gap-2 mb-8 no-scrollbar scroll-smooth">
-          {(['Overview', 'Forex', 'Crypto', 'Stocks', 'Indices', 'Commodities'] as const).map((tab) => {
+          {MARKET_FILTERS.map((tab) => {
             const isActive = activeTab === tab;
             return (
               <button
@@ -669,7 +781,7 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
                 onClick={() => {
                   setActiveTab(tab);
                   // Auto-select first element from that tab to display in chart
-                  const matched = ALL_MARKETS_TICKERS.find(t => tab === 'Overview' || t.category === tab);
+                  const matched = marketTickers.find(t => tab === 'Overview' || t.category === tab);
                   if (matched) setSelectedAsset(matched);
                 }}
                 className={`px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all border cursor-pointer ${
@@ -902,98 +1014,15 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
                 )}
               </div>
 
-              {/* Vector Candlestick Canvas Drawing */}
+              {/* TradingView Lightweight Charts */}
               <div className="flex-grow w-full relative h-[320px]">
-                <svg className="w-full h-full overflow-visible" viewBox="0 0 450 280">
-                  
-                  {/* Grid Lines */}
-                  <line x1="0" y1="40" x2="450" y2="40" stroke="#ffffff" strokeOpacity="0.03" strokeDasharray="3,3" />
-                  <line x1="0" y1="100" x2="450" y2="100" stroke="#ffffff" strokeOpacity="0.03" strokeDasharray="3,3" />
-                  <line x1="0" y1="160" x2="450" y2="160" stroke="#ffffff" strokeOpacity="0.03" strokeDasharray="3,3" />
-                  <line x1="0" y1="220" x2="450" y2="220" stroke="#ffffff" strokeOpacity="0.03" strokeDasharray="3,3" />
-
-                  {/* Vertical dividers representing hours/days */}
-                  <line x1="100" y1="0" x2="100" y2="280" stroke="#ffffff" strokeOpacity="0.02" strokeDasharray="3,3" />
-                  <line x1="225" y1="0" x2="225" y2="280" stroke="#ffffff" strokeOpacity="0.02" strokeDasharray="3,3" />
-                  <line x1="350" y1="0" x2="350" y2="280" stroke="#ffffff" strokeOpacity="0.02" strokeDasharray="3,3" />
-
-                  {/* Render the list of candles dynamically */}
-                  {(() => {
-                    const lowPrices = chartCandles.map(c => c.low);
-                    const highPrices = chartCandles.map(c => c.high);
-                    const absoluteMin = Math.min(...lowPrices);
-                    const absoluteMax = Math.max(...highPrices);
-                    const priceRange = absoluteMax - absoluteMin || 1;
-
-                    return chartCandles.map((candle, idx) => {
-                      const totalWidth = 430;
-                      const spacing = totalWidth / chartCandles.length;
-                      const x = 10 + idx * spacing;
-                      const width = spacing * 0.7;
-
-                      const mapY = (price: number) => {
-                        const topPadding = 25;
-                        const bottomPadding = 250;
-                        return bottomPadding - ((price - absoluteMin) / priceRange) * (bottomPadding - topPadding);
-                      };
-
-                      const yOpen = mapY(candle.open);
-                      const yClose = mapY(candle.close);
-                      const yHigh = mapY(candle.high);
-                      const yLow = mapY(candle.low);
-
-                      const candleTop = Math.min(yOpen, yClose);
-                      const candleHeight = Math.max(Math.abs(yOpen - yClose), 1.5);
-                      const candleColor = candle.isUp ? '#22c55e' : '#ef4444';
-
-                      return (
-                        <g 
-                          key={`candle-${idx}`}
-                          className="cursor-pointer group/candle"
-                          onMouseEnter={() => setHoveredCandle(candle)}
-                          onMouseLeave={() => setHoveredCandle(null)}
-                        >
-                          {/* Wick (Shadow line) */}
-                          <line 
-                            x1={x + width / 2} 
-                            y1={yHigh} 
-                            x2={x + width / 2} 
-                            y2={yLow} 
-                            stroke={candleColor} 
-                            strokeWidth="1" 
-                            strokeOpacity={hoveredCandle?.time === candle.time ? '1' : '0.6'}
-                          />
-                          {/* Candle Real Body */}
-                          <rect
-                            x={x}
-                            y={candleTop}
-                            width={width}
-                            height={candleHeight}
-                            fill={candleColor}
-                            fillOpacity={hoveredCandle?.time === candle.time ? '1' : '0.85'}
-                            rx="1"
-                            className="transition-all duration-150"
-                          />
-
-                          {/* Interactive Hover Glow Circle */}
-                          {hoveredCandle?.time === candle.time && (
-                            <circle 
-                              cx={x + width / 2} 
-                              cy={yClose} 
-                              r="4" 
-                              fill={candleColor} 
-                              stroke="#ffffff" 
-                              strokeWidth="1.5" 
-                              className="animate-ping"
-                            />
-                          )}
-                        </g>
-                      );
-                    });
-                  })()}
-                </svg>
-
-                {/* Simulated Chart Watermark Logo */}
+                {liveCandles.length > 0 ? (
+                  <PriceChart candles={liveCandles} height={320} />
+                ) : (
+                  <div className="h-full flex items-center justify-center text-xs text-gray-500">
+                    {chartStatus === 'loading' ? 'Loading live chart…' : 'Chart data unavailable — check market data API key'}
+                  </div>
+                )}
                 <div className="absolute inset-0 flex items-center justify-center opacity-[0.015] pointer-events-none select-none">
                   <span className="font-display font-extrabold text-9xl tracking-[0.1em] text-white uppercase select-none">VUNEX</span>
                 </div>
@@ -1001,12 +1030,9 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
 
               {/* Time scales bottom timeline labels */}
               <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono border-t border-white/[0.03] pt-3 px-2">
-                <span>13:00</span>
-                <span>14:00</span>
-                <span>15:00</span>
-                <span>16:00</span>
-                <span>17:00</span>
-                <span>18:00</span>
+                <span className="uppercase tracking-wider">{chartStatus === 'live' ? 'Live feed' : chartStatus}</span>
+                <span>{selectedAsset.symbol}</span>
+                <span>{activeTimeframe}</span>
               </div>
 
             </div>
@@ -1065,7 +1091,7 @@ export default function MarketsPage({ onGetStartedClick, onTradeClick }: Markets
             </div>
 
             <div className="grid grid-cols-2 gap-3 flex-grow overflow-y-auto">
-              {ALL_MARKETS_TICKERS.slice(0, 6).map((pop) => (
+              {marketTickers.slice(0, 6).map((pop) => (
                 <div 
                   key={`popular-${pop.symbol}`}
                   onClick={() => handleSelectAsset(pop)}

@@ -23,6 +23,8 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import logoImg from '../assets/images/cutouts/logo_official.png';
 import shieldImg from '../assets/images/cutouts/shield.png';
+import { useAuth } from '../auth/AuthContext';
+import { ApiError } from '../api/client';
 
 interface AdminLoginProps {
   onBackToHome: () => void;
@@ -30,9 +32,10 @@ interface AdminLoginProps {
 }
 
 export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginProps) {
+  const { login } = useAuth();
   // Input fields state
   const [email, setEmail] = useState('admin@vunexmarket.com');
-  const [password, setPassword] = useState('admin123');
+  const [password, setPassword] = useState('Admin123!');
   const [showPassword, setShowPassword] = useState(false);
   const [twoFactor, setTwoFactor] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
@@ -65,7 +68,7 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
     return () => clearInterval(timer);
   }, []);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       triggerToast('Please fill in all security fields.');
@@ -75,13 +78,23 @@ export default function AdminLogin({ onBackToHome, onLoginSuccess }: AdminLoginP
     setIsLoading(true);
     triggerToast('Authenticating with Vunex secure vaults...');
     
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const user = await login(email, password);
+      if (user.role !== 'Admin') {
+        triggerToast('Access denied. Admin privileges required.');
+        return;
+      }
       triggerToast('Access granted! Loading administrator dashboard.');
-      setTimeout(() => {
-        onLoginSuccess();
-      }, 1000);
-    }, 2000);
+      setTimeout(() => onLoginSuccess(), 600);
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : 'Authentication failed. Check credentials.';
+      triggerToast(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

@@ -23,11 +23,20 @@ import {
 
 interface PartnersPageProps {
   onGetStartedClick: () => void;
+  activeSection?: string | null;
+  onSectionChange?: (section: string | null) => void;
 }
 
-export default function PartnersPage({ onGetStartedClick }: PartnersPageProps) {
-  const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
-  const [calculatorOpen, setCalculatorOpen] = useState(false);
+export default function PartnersPage({
+  onGetStartedClick,
+  activeSection = null,
+  onSectionChange,
+}: PartnersPageProps) {
+  const selectedProgram = activeSection;
+  const calculatorOpen = activeSection === 'calculator';
+  const setSelectedProgram = (id: string | null) => onSectionChange?.(id);
+  const setCalculatorOpen = (open: boolean) =>
+    onSectionChange?.(open ? 'calculator' : null);
   
   // Calculator States
   const [clients, setClients] = useState(25);

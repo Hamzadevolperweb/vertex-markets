@@ -17,6 +17,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { ADMIN_PAGE_META, type AdminPageId } from './adminTypes';
+import AdminTradingOps from './AdminTradingOps';
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 
@@ -1012,6 +1013,40 @@ function IntegrationsPage() {
 /* ─── Main export ───────────────────────────────────────────────────────── */
 
 export default function AdminPageContent({
+  pageId,
+}: {
+  pageId: Exclude<AdminPageId, 'dashboard'>;
+}) {
+  const liveModes = new Set([
+    'reports',
+    'analytics',
+    'kyc',
+    'withdrawals',
+    'transactions',
+    'deposits',
+    'live-trades',
+    'orders',
+    'positions',
+    'assets',
+    'settings',
+    'wallets',
+  ]);
+
+  const livePanel = liveModes.has(pageId) ? (
+    <div className="mb-6">
+      <AdminTradingOps mode={pageId} />
+    </div>
+  ) : null;
+
+  return (
+    <div>
+      {livePanel}
+      <AdminPageContentInner pageId={pageId} />
+    </div>
+  );
+}
+
+function AdminPageContentInner({
   pageId,
 }: {
   pageId: Exclude<AdminPageId, 'dashboard'>;

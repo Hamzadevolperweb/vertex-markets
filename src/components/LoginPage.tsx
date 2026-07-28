@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Mail,
@@ -22,6 +22,9 @@ import {
 } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import HeroVisual from './HeroVisual';
+import { useAuth } from '../auth/AuthContext';
+import { ApiError } from '../api/client';
+import type { AuthUser } from '../api/types';
 
 const TRANSLATIONS = {
   EN: {
@@ -219,7 +222,8 @@ type LangKey = 'EN' | 'ES' | 'DE' | 'AR';
 interface LoginPageProps {
   onBackToHome: () => void;
   initialMode?: 'signin' | 'signup';
-  onLoginSuccess?: () => void;
+  onModeChange?: (mode: 'signin' | 'signup') => void;
+  onLoginSuccess?: (user: AuthUser) => void;
 }
 
 const COUNTRY_CODES = [
@@ -261,11 +265,17 @@ function HeroBullScene({ compact = false }: { compact?: boolean }) {
 export default function LoginPage({
   onBackToHome,
   initialMode = 'signin',
+  onModeChange,
   onLoginSuccess,
 }: LoginPageProps) {
+  const { login, register } = useAuth();
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
   const [language, setLanguage] = useState<LangKey>('EN');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+
+  useEffect(() => {
+    setIsSignUp(initialMode === 'signup');
+  }, [initialMode]);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -302,12 +312,14 @@ export default function LoginPage({
   ];
 
   const switchMode = () => {
-    setIsSignUp(!isSignUp);
+    const next = !isSignUp;
+    setIsSignUp(next);
     setErrorMsg(null);
     setSuccessMsg(null);
+    onModeChange?.(next ? 'signup' : 'signin');
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
     setSuccessMsg(null);
@@ -327,6 +339,10 @@ export default function LoginPage({
       }
       if (!password) {
         setErrorMsg('Please create a password.');
+        return;
+      }
+      if (password.length < 8) {
+        setErrorMsg('Password must be at least 8 characters.');
         return;
       }
       if (password !== confirmPassword) {
@@ -351,29 +367,39 @@ export default function LoginPage({
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (email.includes('error')) {
-        setErrorMsg(
-          'Invalid credentials. Please double check and try again.',
-        );
-      } else {
-        setSuccessMsg(
-          isSignUp
-            ? 'Account successfully created! Verification link sent.'
-            : 'Access granted. Welcome back to Vunex Market!',
-        );
-        setEmail('');
-        setPassword('');
-        setFullName('');
-        setConfirmPassword('');
-        setPhoneNumber('');
-        setAgreeTerms(false);
-        if (onLoginSuccess) {
-          setTimeout(() => onLoginSuccess(), 1500);
-        }
+    try {
+      const user = isSignUp
+        ? await register({
+            email,
+            password,
+            fullName,
+            phone: `${phoneCode}${phoneNumber}`,
+          })
+        : await login(email, password);
+
+      setSuccessMsg(
+        isSignUp
+          ? 'Account created. Welcome to Vunex Market!'
+          : 'Access granted. Welcome back to Vunex Market!',
+      );
+      setEmail('');
+      setPassword('');
+      setFullName('');
+      setConfirmPassword('');
+      setPhoneNumber('');
+      setAgreeTerms(false);
+      if (onLoginSuccess) {
+        setTimeout(() => onLoginSuccess(user), 800);
       }
-    }, 2000);
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : 'Something went wrong. Please try again.';
+      setErrorMsg(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   /* ------------------------------------------------------------------ */

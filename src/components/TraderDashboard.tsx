@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import TradingTerminal from './TradingTerminal';
+import AccountHub from './AccountHub';
+import BinaryTradingPanel from './BinaryTradingPanel';
 import WalletDashboard from './WalletDashboard';
 import DepositDashboard from './DepositDashboard';
 import WithdrawDashboard from './WithdrawDashboard';
@@ -87,6 +89,8 @@ interface TransactionItem {
 
 interface TraderDashboardProps {
   onLogout: () => void;
+  activeTab?: string;
+  onNavigate?: (tab: string) => void;
 }
 
 // Generate timeframe-specific chart data based on symbol
@@ -130,8 +134,17 @@ const getChartData = (symbol: string, timeframe: string) => {
   return data;
 };
 
-export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
-  const [activeTab, setActiveTab] = useState<string>('Overview');
+export default function TraderDashboard({
+  onLogout,
+  activeTab: controlledTab,
+  onNavigate: controlledNavigate,
+}: TraderDashboardProps) {
+  const [internalTab, setInternalTab] = useState<string>('Overview');
+  const activeTab = controlledTab ?? internalTab;
+  const setActiveTab = (tab: string) => {
+    if (controlledNavigate) controlledNavigate(tab);
+    else setInternalTab(tab);
+  };
   const [showBalances, setShowBalances] = useState(true);
   const [selectedSymbol, setSelectedSymbol] = useState('EURUSD');
   const [chartTimeframe, setChartTimeframe] = useState('1D');
@@ -388,7 +401,47 @@ export default function TraderDashboard({ onLogout }: TraderDashboardProps) {
     );
   }
 
-  if (activeTab === 'Trade' || activeTab === 'Markets') {
+  if (activeTab === 'Settings' || activeTab === 'Support' || activeTab === 'Analytics') {
+    return (
+      <AccountHub
+        onBack={() => setActiveTab('Overview')}
+        onLogout={onLogout}
+        onToast={(msg, type) =>
+          triggerToast(msg, type === 'error' ? 'info' : type || 'info')
+        }
+      />
+    );
+  }
+
+  if (activeTab === 'Trade' || activeTab === 'Markets' || activeTab === 'Positions') {
+    return (
+      <div className="min-h-screen bg-[#030303] text-[#f4f4f5]">
+        <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setActiveTab('Overview')}
+            className="text-sm text-gray-400 hover:text-white"
+          >
+            ← Overview
+          </button>
+          <button
+            type="button"
+            onClick={onLogout}
+            className="text-sm text-gray-400 hover:text-white"
+          >
+            Logout
+          </button>
+        </div>
+        <BinaryTradingPanel
+          onToast={(msg, type) =>
+            triggerToast(msg, type === 'error' ? 'info' : type || 'info')
+          }
+        />
+      </div>
+    );
+  }
+
+  if (activeTab === '__legacy_terminal__') {
     return (
       <TradingTerminal 
         onLogout={onLogout}

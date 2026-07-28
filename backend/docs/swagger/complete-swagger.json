@@ -1,0 +1,3922 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Vertex Markets API",
+    "version": "1.0.0",
+    "description": "Production-ready backend API for a modern Forex/Trading company website. Provides authentication, user management, CMS content management, markets, trading platforms, blog, contact management, newsletter subscriptions, careers/jobs, partner management, file uploads, admin dashboard, and global search capabilities.",
+    "contact": {
+      "name": "Vertex Markets Development Team"
+    },
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    },
+    {
+      "url": "https://api.vertexmarkets.com",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT access token obtained from POST /api/v1/login"
+      },
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "accessToken",
+        "description": "JWT access token stored in HTTP-only cookie"
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Not Found" },
+          "details": {
+            "type": "array",
+            "items": { "type": "object" }
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Validation Failed" },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": { "type": "string", "example": "email" },
+                "message": { "type": "string", "example": "Invalid email address" }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Bad Request" }
+        }
+      },
+      "Unauthorized": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Unauthorized" }
+        }
+      },
+      "Forbidden": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Forbidden" }
+        }
+      },
+      "NotFound": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Not Found" }
+        }
+      },
+      "Conflict": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string", "example": "Conflict" }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "currentPage": { "type": "integer", "example": 1 },
+          "totalPages": { "type": "integer", "example": 5 },
+          "totalRecords": { "type": "integer", "example": 50 },
+          "pageSize": { "type": "integer", "example": 10 },
+          "hasNextPage": { "type": "boolean", "example": true },
+          "hasPreviousPage": { "type": "boolean", "example": false }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "OK" },
+          "data": { "type": "object" }
+        }
+      },
+      "AuthRegisterRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "user@example.com" },
+          "password": { "type": "string", "minLength": 8, "example": "securePassword123" },
+          "profile": {
+            "type": "object",
+            "properties": {
+              "firstName": { "type": "string", "example": "John" },
+              "lastName": { "type": "string", "example": "Doe" },
+              "phone": { "type": "string", "example": "+1234567890" }
+            }
+          },
+          "role": { "type": "string", "enum": ["Admin", "Customer"], "example": "Customer" }
+        }
+      },
+      "AuthRegisterResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Registered successfully" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "example": "user_abc123" },
+                  "email": { "type": "string", "example": "user@example.com" }
+                }
+              },
+              "verificationToken": { "type": "string", "example": "ev_abc123..." }
+            }
+          }
+        }
+      },
+      "AuthLoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "user@example.com" },
+          "password": { "type": "string", "example": "securePassword123" }
+        }
+      },
+      "AuthLoginResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Login successful" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "accessToken": { "type": "string", "example": "eyJhbGciOiJIUzI1NiIs..." },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "example": "user_abc123" },
+                  "email": { "type": "string", "example": "user@example.com" },
+                  "role": { "type": "string", "example": "Admin" },
+                  "verified": { "type": "boolean", "example": true }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "user@example.com" }
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "required": ["token", "newPassword"],
+        "properties": {
+          "token": { "type": "string", "example": "rp_abc123..." },
+          "newPassword": { "type": "string", "minLength": 8, "example": "newSecurePass123" }
+        }
+      },
+      "VerifyEmailRequest": {
+        "type": "object",
+        "required": ["token"],
+        "properties": {
+          "token": { "type": "string", "example": "ev_abc123..." }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "required": ["oldPassword", "newPassword"],
+        "properties": {
+          "oldPassword": { "type": "string", "example": "oldPassword123" },
+          "newPassword": { "type": "string", "minLength": 8, "example": "newSecurePass456" }
+        }
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string", "example": "John" },
+          "lastName": { "type": "string", "example": "Doe" },
+          "phone": { "type": "string", "example": "+1234567890" },
+          "avatar": { "type": "string", "example": "avatar_url.jpg" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "user_abc123" },
+          "email": { "type": "string", "example": "user@example.com" },
+          "role": { "type": "string", "enum": ["Admin", "Customer"], "example": "Customer" },
+          "verified": { "type": "boolean", "example": true },
+          "active": { "type": "boolean", "example": true },
+          "profile": {
+            "type": "object",
+            "properties": {
+              "firstName": { "type": "string", "example": "John" },
+              "lastName": { "type": "string", "example": "Doe" },
+              "phone": { "type": "string", "example": "+1234567890" },
+              "avatar": { "type": "string", "example": null }
+            }
+          },
+          "createdAt": { "type": "string", "format": "date-time", "example": "2024-01-01T00:00:00.000Z" },
+          "updatedAt": { "type": "string", "format": "date-time", "example": "2024-01-01T00:00:00.000Z" }
+        }
+      },
+      "BlockUserRequest": {
+        "type": "object",
+        "properties": {
+          "reason": { "type": "string", "example": "Violation of terms" }
+        }
+      },
+      "ChangeRoleRequest": {
+        "type": "object",
+        "required": ["role"],
+        "properties": {
+          "role": { "type": "string", "enum": ["Admin", "Customer"], "example": "Admin" }
+        }
+      },
+      "CMSContent": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "hero_abc123" },
+          "section": { "type": "string", "example": "hero" },
+          "content": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string", "example": "Welcome to Vertex Markets" },
+              "subtitle": { "type": "string", "example": "Trade with confidence" },
+              "description": { "type": "string", "example": "Leading Forex broker..." },
+              "ctaText": { "type": "string", "example": "Get Started" },
+              "ctaLink": { "type": "string", "example": "/register" },
+              "backgroundImage": { "type": "string", "example": "hero-bg.jpg" }
+            }
+          },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CMSContentRequest": {
+        "type": "object",
+        "required": ["section", "content"],
+        "properties": {
+          "section": { "type": "string", "enum": ["hero", "about", "features", "statistics", "tradingPlatforms", "markets", "partners", "testimonials", "faq", "footer", "seo"], "example": "hero" },
+          "content": {
+            "type": "object",
+            "example": { "title": "Welcome", "subtitle": "Trade with us" }
+          },
+          "active": { "type": "boolean", "example": true }
+        }
+      },
+      "Market": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "mkt_abc123" },
+          "name": { "type": "string", "example": "Forex" },
+          "slug": { "type": "string", "example": "forex" },
+          "description": { "type": "string", "example": "Foreign exchange market" },
+          "icon": { "type": "string", "example": "forex-icon.png" },
+          "order": { "type": "integer", "example": 1 },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "MarketCreateRequest": {
+        "type": "object",
+        "required": ["name", "slug", "description"],
+        "properties": {
+          "name": { "type": "string", "example": "Forex" },
+          "slug": { "type": "string", "example": "forex" },
+          "description": { "type": "string", "example": "Foreign exchange market" },
+          "icon": { "type": "string", "example": "forex-icon.png" },
+          "order": { "type": "integer", "example": 1 },
+          "active": { "type": "boolean", "example": true }
+        }
+      },
+      "Platform": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "plat_abc123" },
+          "name": { "type": "string", "example": "MetaTrader 4" },
+          "slug": { "type": "string", "example": "metatrader-4" },
+          "description": { "type": "string", "example": "Industry-standard trading platform" },
+          "logo": { "type": "string", "example": "mt4-logo.png" },
+          "features": { "type": "array", "items": { "type": "string" }, "example": ["Advanced Charts", "Automated Trading"] },
+          "supportedMarkets": { "type": "array", "items": { "type": "string" }, "example": ["Forex", "Commodities"] },
+          "downloadLinks": {
+            "type": "object",
+            "properties": {
+              "windows": { "type": "string", "example": "https://example.com/mt4.exe" },
+              "mac": { "type": "string", "example": "https://example.com/mt4.dmg" },
+              "ios": { "type": "string", "example": "https://apps.apple.com/app/mt4" },
+              "android": { "type": "string", "example": "https://play.google.com/store/apps/mt4" },
+              "web": { "type": "string", "example": "https://web.mt4.com" }
+            }
+          },
+          "order": { "type": "integer", "example": 1 },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PlatformCreateRequest": {
+        "type": "object",
+        "required": ["name", "slug", "description"],
+        "properties": {
+          "name": { "type": "string", "example": "MetaTrader 4" },
+          "slug": { "type": "string", "example": "metatrader-4" },
+          "description": { "type": "string", "example": "Industry-standard trading platform" },
+          "logo": { "type": "string", "example": "mt4-logo.png" },
+          "features": { "type": "array", "items": { "type": "string" } },
+          "supportedMarkets": { "type": "array", "items": { "type": "string" } },
+          "downloadLinks": { "type": "object" },
+          "order": { "type": "integer", "example": 1 },
+          "active": { "type": "boolean", "example": true }
+        }
+      },
+      "BlogPost": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "blog_abc123" },
+          "title": { "type": "string", "example": "Understanding Forex Trading" },
+          "slug": { "type": "string", "example": "understanding-forex-trading" },
+          "excerpt": { "type": "string", "example": "A beginner's guide to Forex..." },
+          "content": { "type": "string", "example": "Full blog content here..." },
+          "coverImage": { "type": "string", "example": "blog-cover.jpg" },
+          "author": { "type": "string", "example": "John Doe" },
+          "category": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" } } },
+          "tags": { "type": "array", "items": { "type": "object" } },
+          "status": { "type": "string", "enum": ["draft", "published"], "example": "published" },
+          "publishedAt": { "type": "string", "format": "date-time" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "BlogCreateRequest": {
+        "type": "object",
+        "required": ["title", "content"],
+        "properties": {
+          "title": { "type": "string", "example": "Understanding Forex Trading" },
+          "slug": { "type": "string", "example": "understanding-forex-trading" },
+          "excerpt": { "type": "string", "example": "A beginner's guide..." },
+          "content": { "type": "string", "example": "Full article content..." },
+          "coverImage": { "type": "string", "example": "cover.jpg" },
+          "author": { "type": "string", "example": "John Doe" },
+          "category": { "type": "string", "example": "cat_abc123" },
+          "tags": { "type": "array", "items": { "type": "string" }, "example": ["tag1", "tag2"] },
+          "status": { "type": "string", "enum": ["draft", "published"], "example": "published" },
+          "metaTitle": { "type": "string" },
+          "metaDescription": { "type": "string" },
+          "active": { "type": "boolean", "example": true }
+        }
+      },
+      "BlogCategory": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "cat_abc123" },
+          "name": { "type": "string", "example": "Forex Education" },
+          "slug": { "type": "string", "example": "forex-education" },
+          "description": { "type": "string", "example": "Educational content about Forex" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "BlogTag": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "tag_abc123" },
+          "name": { "type": "string", "example": "Beginners" },
+          "slug": { "type": "string", "example": "beginners" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ContactMessage": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "cnt_abc123" },
+          "fullName": { "type": "string", "example": "John Doe" },
+          "email": { "type": "string", "example": "john@example.com" },
+          "phone": { "type": "string", "example": "+1234567890" },
+          "country": { "type": "string", "example": "United States" },
+          "subject": { "type": "string", "example": "Account Inquiry" },
+          "message": { "type": "string", "example": "I would like to know more about..." },
+          "department": { "type": "string", "example": "Support" },
+          "status": { "type": "string", "enum": ["new", "in_progress", "replied", "closed"], "example": "new" },
+          "assignedTo": { "type": "string", "example": null },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ContactCreateRequest": {
+        "type": "object",
+        "required": ["fullName", "email", "phone", "country", "subject", "message"],
+        "properties": {
+          "fullName": { "type": "string", "minLength": 2, "maxLength": 200, "example": "John Doe" },
+          "email": { "type": "string", "format": "email", "example": "john@example.com" },
+          "phone": { "type": "string", "minLength": 7, "maxLength": 25, "example": "+1234567890" },
+          "country": { "type": "string", "minLength": 2, "maxLength": 100, "example": "United States" },
+          "subject": { "type": "string", "minLength": 3, "maxLength": 150, "example": "Account Inquiry" },
+          "message": { "type": "string", "minLength": 10, "maxLength": 4000, "example": "I would like to know more about your services." },
+          "department": { "type": "string", "maxLength": 100, "example": "Support" }
+        }
+      },
+      "ContactReplyRequest": {
+        "type": "object",
+        "required": ["replyMessage"],
+        "properties": {
+          "replyMessage": { "type": "string", "minLength": 1, "maxLength": 4000, "example": "Thank you for your inquiry..." },
+          "fromEmail": { "type": "string", "format": "email", "example": "support@vertexmarkets.com" },
+          "assignedTo": { "type": "string", "example": "user_xyz789" }
+        }
+      },
+      "NewsletterSubscriber": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "nl_abc123" },
+          "email": { "type": "string", "example": "subscriber@example.com" },
+          "fullName": { "type": "string", "example": "Jane Doe" },
+          "status": { "type": "string", "enum": ["subscribed", "unsubscribed"], "example": "subscribed" },
+          "source": { "type": "string", "example": "website" },
+          "tags": { "type": "array", "items": { "type": "string" }, "example": ["forex", "newsletter"] },
+          "active": { "type": "boolean", "example": true },
+          "subscribedAt": { "type": "string", "format": "date-time" },
+          "unsubscribedAt": { "type": "string", "format": "date-time", "example": null },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "NewsletterSubscribeRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "subscriber@example.com" },
+          "fullName": { "type": "string", "example": "Jane Doe" },
+          "source": { "type": "string", "example": "website" },
+          "tags": { "type": "array", "items": { "type": "string" }, "example": ["forex"] }
+        }
+      },
+      "NewsletterUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "fullName": { "type": "string" },
+          "source": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "active": { "type": "boolean" }
+        }
+      },
+      "NewsletterStatusRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": { "type": "string", "enum": ["subscribed", "unsubscribed"], "example": "subscribed" }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "job_abc123" },
+          "title": { "type": "string", "example": "Senior Forex Trader" },
+          "slug": { "type": "string", "example": "senior-forex-trader" },
+          "department": { "type": "string", "example": "Trading" },
+          "location": { "type": "string", "example": "London, UK" },
+          "employmentType": { "type": "string", "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"], "example": "Full-time" },
+          "experienceLevel": { "type": "string", "enum": ["Entry", "Junior", "Mid-Level", "Senior", "Lead", "Manager", "Director", "Executive"], "example": "Senior" },
+          "description": { "type": "string", "example": "We are looking for an experienced trader..." },
+          "requirements": { "type": "array", "items": { "type": "string" }, "example": ["5+ years experience", "CFA preferred"] },
+          "responsibilities": { "type": "array", "items": { "type": "string" }, "example": ["Manage trading desk", "Analyze markets"] },
+          "salaryMin": { "type": "number", "example": 80000 },
+          "salaryMax": { "type": "number", "example": 120000 },
+          "currency": { "type": "string", "example": "USD" },
+          "featured": { "type": "boolean", "example": true },
+          "status": { "type": "string", "enum": ["open", "closed", "draft"], "example": "open" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "JobCreateRequest": {
+        "type": "object",
+        "required": ["title", "description", "department", "location"],
+        "properties": {
+          "title": { "type": "string", "example": "Senior Forex Trader" },
+          "slug": { "type": "string", "example": "senior-forex-trader" },
+          "department": { "type": "string", "example": "Trading" },
+          "location": { "type": "string", "example": "London, UK" },
+          "employmentType": { "type": "string", "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"], "example": "Full-time" },
+          "experienceLevel": { "type": "string", "enum": ["Entry", "Junior", "Mid-Level", "Senior", "Lead", "Manager", "Director", "Executive"], "example": "Senior" },
+          "description": { "type": "string", "example": "We are looking for..." },
+          "requirements": { "type": "array", "items": { "type": "string" } },
+          "responsibilities": { "type": "array", "items": { "type": "string" } },
+          "salaryMin": { "type": "number", "example": 80000 },
+          "salaryMax": { "type": "number", "example": 120000 },
+          "currency": { "type": "string", "example": "USD" },
+          "featured": { "type": "boolean", "example": false },
+          "status": { "type": "string", "enum": ["open", "closed", "draft"], "example": "open" },
+          "active": { "type": "boolean", "example": true }
+        }
+      },
+      "JobApplication": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "app_abc123" },
+          "jobId": { "type": "string", "example": "job_abc123" },
+          "fullName": { "type": "string", "example": "John Doe" },
+          "email": { "type": "string", "example": "john@example.com" },
+          "phone": { "type": "string", "example": "+1234567890" },
+          "coverLetter": { "type": "string", "example": "I am excited to apply..." },
+          "resumeUrl": { "type": "string", "example": "/api/v1/uploads/file/resume_abc.pdf" },
+          "status": { "type": "string", "enum": ["new", "reviewed", "shortlisted", "interviewed", "offered", "hired", "rejected"], "example": "new" },
+          "assignedTo": { "type": "string", "example": null },
+          "notes": { "type": "string", "example": "Internal notes..." },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ApplicationRequest": {
+        "type": "object",
+        "required": ["fullName", "email", "phone", "coverLetter"],
+        "properties": {
+          "fullName": { "type": "string", "example": "John Doe" },
+          "email": { "type": "string", "format": "email", "example": "john@example.com" },
+          "phone": { "type": "string", "example": "+1234567890" },
+          "coverLetter": { "type": "string", "example": "I am excited to apply..." },
+          "resumeUrl": { "type": "string", "example": "resume_abc.pdf" },
+          "linkedIn": { "type": "string", "example": "https://linkedin.com/in/johndoe" },
+          "portfolio": { "type": "string", "example": "https://johndoe.com" },
+          "referral": { "type": "string", "example": "Referred by employee" }
+        }
+      },
+      "ApplicationStatusRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": { "type": "string", "enum": ["new", "reviewed", "shortlisted", "interviewed", "offered", "hired", "rejected"], "example": "reviewed" }
+        }
+      },
+      "Partner": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "prt_abc123" },
+          "fullName": { "type": "string", "example": "John Doe" },
+          "companyName": { "type": "string", "example": "Doe Investments" },
+          "email": { "type": "string", "example": "john@doeinvestments.com" },
+          "phone": { "type": "string", "example": "+1234567890" },
+          "country": { "type": "string", "example": "United States" },
+          "city": { "type": "string", "example": "New York" },
+          "website": { "type": "string", "example": "https://doeinvestments.com" },
+          "partnerType": { "type": "string", "enum": ["Introducing Broker (IB)", "Affiliate Partner", "Regional Partner", "Business Partner", "Institutional Partner"], "example": "Introducing Broker (IB)" },
+          "experience": { "type": "string", "example": "10 years in Forex" },
+          "monthlyClients": { "type": "string", "example": "50-100" },
+          "businessDescription": { "type": "string", "example": "We provide brokerage services..." },
+          "referralSource": { "type": "string", "example": "Google" },
+          "status": { "type": "string", "enum": ["pending", "under_review", "approved", "rejected"], "example": "pending" },
+          "assignedTo": { "type": "string", "example": null },
+          "notes": { "type": "string", "example": "Internal notes" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PartnerRegisterRequest": {
+        "type": "object",
+        "required": ["fullName", "email", "phone", "country", "partnerType"],
+        "properties": {
+          "fullName": { "type": "string", "minLength": 2, "maxLength": 200, "example": "John Doe" },
+          "companyName": { "type": "string", "maxLength": 200, "example": "Doe Investments" },
+          "email": { "type": "string", "format": "email", "example": "john@doeinvestments.com" },
+          "phone": { "type": "string", "minLength": 7, "maxLength": 25, "example": "+1234567890" },
+          "country": { "type": "string", "minLength": 2, "maxLength": 100, "example": "United States" },
+          "city": { "type": "string", "maxLength": 100, "example": "New York" },
+          "website": { "type": "string", "format": "url", "example": "https://doeinvestments.com" },
+          "partnerType": { "type": "string", "enum": ["Introducing Broker (IB)", "Affiliate Partner", "Regional Partner", "Business Partner", "Institutional Partner"], "example": "Introducing Broker (IB)" },
+          "experience": { "type": "string", "maxLength": 500, "example": "10 years in Forex" },
+          "monthlyClients": { "type": "string", "maxLength": 100, "example": "50-100" },
+          "businessDescription": { "type": "string", "maxLength": 2000, "example": "We provide..." },
+          "referralSource": { "type": "string", "maxLength": 200, "example": "Google" }
+        }
+      },
+      "Referral": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "ref_abc123" },
+          "clientName": { "type": "string", "example": "Jane Smith" },
+          "clientEmail": { "type": "string", "example": "jane@example.com" },
+          "clientPhone": { "type": "string", "example": "+9876543210" },
+          "country": { "type": "string", "example": "UK" },
+          "tradingExperience": { "type": "string", "example": "5 years" },
+          "estimatedDeposit": { "type": "string", "example": "$10,000 - $50,000" },
+          "message": { "type": "string", "example": "Referred by partner" },
+          "referredBy": { "type": "string", "example": "John Doe" },
+          "status": { "type": "string", "enum": ["new", "contacted", "qualified", "converted", "closed"], "example": "new" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ReferralSubmitRequest": {
+        "type": "object",
+        "required": ["clientName", "clientEmail", "clientPhone", "country", "referredBy"],
+        "properties": {
+          "clientName": { "type": "string", "minLength": 2, "maxLength": 200, "example": "Jane Smith" },
+          "clientEmail": { "type": "string", "format": "email", "example": "jane@example.com" },
+          "clientPhone": { "type": "string", "minLength": 7, "maxLength": 25, "example": "+9876543210" },
+          "country": { "type": "string", "minLength": 2, "maxLength": 100, "example": "UK" },
+          "tradingExperience": { "type": "string", "maxLength": 500, "example": "5 years" },
+          "estimatedDeposit": { "type": "string", "maxLength": 100, "example": "$10,000 - $50,000" },
+          "message": { "type": "string", "maxLength": 2000, "example": "Referred by partner" },
+          "referredBy": { "type": "string", "maxLength": 200, "example": "John Doe" }
+        }
+      },
+      "File": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "example": "file_abc123" },
+          "fileName": { "type": "string", "example": "abc123.jpg" },
+          "originalName": { "type": "string", "example": "profile.jpg" },
+          "mimeType": { "type": "string", "example": "image/jpeg" },
+          "size": { "type": "integer", "example": 102400 },
+          "category": { "type": "string", "enum": ["avatar", "blog", "cms", "platform", "market", "partner", "resume", "document"], "example": "avatar" },
+          "url": { "type": "string", "example": "/api/v1/uploads/file/abc123.jpg" },
+          "active": { "type": "boolean", "example": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "DashboardStatistics": {
+        "type": "object",
+        "properties": {
+          "users": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 150 },
+              "active": { "type": "integer", "example": 120 },
+              "blocked": { "type": "integer", "example": 5 }
+            }
+          },
+          "blog": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 45 },
+              "published": { "type": "integer", "example": 30 },
+              "draft": { "type": "integer", "example": 15 }
+            }
+          },
+          "cms": {
+            "type": "object",
+            "properties": {
+              "totalSections": { "type": "integer", "example": 11 }
+            }
+          },
+          "markets": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 8 }
+            }
+          },
+          "platforms": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 5 }
+            }
+          },
+          "contact": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 200 },
+              "new": { "type": "integer", "example": 25 },
+              "replied": { "type": "integer", "example": 100 },
+              "closed": { "type": "integer", "example": 75 }
+            }
+          },
+          "newsletter": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 500 },
+              "active": { "type": "integer", "example": 450 },
+              "unsubscribed": { "type": "integer", "example": 50 }
+            }
+          },
+          "careers": {
+            "type": "object",
+            "properties": {
+              "totalJobs": { "type": "integer", "example": 15 },
+              "activeJobs": { "type": "integer", "example": 10 },
+              "closedJobs": { "type": "integer", "example": 5 },
+              "totalApplications": { "type": "integer", "example": 80 }
+            }
+          },
+          "partners": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 60 },
+              "pending": { "type": "integer", "example": 15 },
+              "approved": { "type": "integer", "example": 35 },
+              "rejected": { "type": "integer", "example": 10 }
+            }
+          },
+          "referrals": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 120 }
+            }
+          },
+          "uploads": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "example": 300 },
+              "images": { "type": "integer", "example": 250 },
+              "documents": { "type": "integer", "example": 50 }
+            }
+          }
+        }
+      },
+      "SystemHealth": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "healthy" },
+          "apiStatus": { "type": "string", "example": "running" },
+          "serverStatus": { "type": "string", "example": "operational" },
+          "uptime": { "type": "integer", "example": 86400 },
+          "uptimeFormatted": { "type": "string", "example": "1d 0h 0m" },
+          "totalModules": { "type": "integer", "example": 12 },
+          "modules": { "type": "array", "items": { "type": "string" } },
+          "registeredRoutes": { "type": "array", "items": { "type": "string" } },
+          "totalRoutes": { "type": "integer", "example": 50 },
+          "version": { "type": "string", "example": "1.0.0" },
+          "environment": { "type": "string", "example": "development" },
+          "nodeVersion": { "type": "string", "example": "20.0.0" },
+          "platform": { "type": "string", "example": "win32" },
+          "memoryUsage": {
+            "type": "object",
+            "properties": {
+              "rss": { "type": "integer" },
+              "heapTotal": { "type": "integer" },
+              "heapUsed": { "type": "integer" },
+              "external": { "type": "integer" }
+            }
+          },
+          "startedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "DashboardResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Dashboard data fetched" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "statistics": { "$ref": "#/components/schemas/DashboardStatistics" },
+              "dashboardCards": {
+                "type": "object",
+                "properties": {
+                  "growthSummary": { "type": "object" },
+                  "pendingTasks": { "type": "object" },
+                  "activeModules": { "type": "object" },
+                  "systemHealth": { "type": "object" },
+                  "totalRecords": { "type": "integer", "example": 1500 }
+                }
+              },
+              "recentActivity": { "type": "array", "items": { "type": "object" } }
+            }
+          }
+        }
+      },
+      "SearchPagination": {
+        "type": "object",
+        "properties": {
+          "currentPage": { "type": "integer", "example": 1 },
+          "totalPages": { "type": "integer", "example": 3 },
+          "totalRecords": { "type": "integer", "example": 25 },
+          "pageSize": { "type": "integer", "example": 10 },
+          "hasNextPage": { "type": "boolean", "example": true },
+          "hasPreviousPage": { "type": "boolean", "example": false }
+        }
+      },
+      "ModuleSearchResults": {
+        "type": "object",
+        "properties": {
+          "currentPage": { "type": "integer" },
+          "totalPages": { "type": "integer" },
+          "totalRecords": { "type": "integer" },
+          "pageSize": { "type": "integer" },
+          "hasNextPage": { "type": "boolean" },
+          "hasPreviousPage": { "type": "boolean" },
+          "data": { "type": "array", "items": { "type": "object" } }
+        }
+      },
+      "GlobalSearchResults": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "example": "forex" },
+          "module": { "type": "string", "example": "all" },
+          "filters": { "type": "object" },
+          "pagination": { "type": "object" },
+          "sorting": { "type": "object" },
+          "results": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/components/schemas/ModuleSearchResults" }
+          },
+          "total": { "type": "integer", "example": 15 },
+          "executionTime": { "type": "integer", "example": 45 }
+        }
+      },
+      "SearchResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string", "example": "Search completed" },
+          "data": { "$ref": "#/components/schemas/GlobalSearchResults" }
+        }
+      },
+      "ModuleSearchResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "query": { "type": "string" },
+              "module": { "type": "string" },
+              "filters": { "type": "object" },
+              "pagination": { "$ref": "#/components/schemas/SearchPagination" },
+              "sorting": {
+                "type": "object",
+                "properties": {
+                  "sortBy": { "type": "string" },
+                  "sortOrder": { "type": "string", "enum": ["asc", "desc"] }
+                }
+              },
+              "results": { "type": "array", "items": { "type": "object" } },
+              "total": { "type": "integer" },
+              "executionTime": { "type": "integer" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/auth/status": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Check auth service status",
+        "description": "Health check endpoint for the authentication service. No authentication required.",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new user account",
+        "description": "Create a new user account with email and password. Optionally accepts profile information and role. Returns a verification token for email verification.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthRegisterRequest" },
+              "example": {
+                "email": "user@example.com",
+                "password": "securePassword123",
+                "profile": {
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "phone": "+1234567890"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthRegisterResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ValidationError" } } } },
+          "409": { "description": "Email already in use", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Conflict" } } } }
+        }
+      }
+    },
+    "/api/v1/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login with email and password",
+        "description": "Authenticate a user with email and password. Returns an access token (JWT) and sets a refresh token as an HTTP-only cookie. The access token must be sent as a Bearer token in the Authorization header for subsequent requests.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthLoginRequest" },
+              "example": {
+                "email": "admin@vertexmarkets.com",
+                "password": "admin123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "headers": {
+              "Set-Cookie": {
+                "description": "HTTP-only cookie containing the refresh token",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthLoginResponse" }
+              }
+            }
+          },
+          "401": { "description": "Invalid credentials", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Unauthorized" } } } }
+        }
+      }
+    },
+    "/api/v1/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Logout current session",
+        "description": "Revoke the refresh token and clear the authentication cookie. Accepts refresh token in body, cookie, or x-refresh-token header.",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Logged out successfully" }
+        }
+      }
+    },
+    "/api/v1/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh access token",
+        "description": "Obtain a new access token using a valid refresh token. The refresh token is rotated (old one revoked, new one issued).",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "New access token issued" },
+          "401": { "description": "Invalid or expired refresh token" }
+        }
+      }
+    },
+    "/api/v1/forgot-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Request password reset",
+        "description": "Initiate a password reset flow. If the email exists, a reset token is generated (and would be sent via email in production). Returns the reset token in development.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ForgotPasswordRequest" },
+              "example": { "email": "user@example.com" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "If email exists, reset instructions provided" }
+        }
+      }
+    },
+    "/api/v1/reset-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Reset password with token",
+        "description": "Complete the password reset flow using the token received from forgot-password. New password must be at least 8 characters.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ResetPasswordRequest" },
+              "example": { "token": "rp_abc123...", "newPassword": "newSecurePass123" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password reset successful" },
+          "400": { "description": "Invalid or expired reset token" }
+        }
+      }
+    },
+    "/api/v1/verify-email": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Verify email address",
+        "description": "Verify a user's email address using the verification token received during registration.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifyEmailRequest" },
+              "example": { "token": "ev_abc123..." }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Email verified successfully" },
+          "400": { "description": "Invalid or expired verification token" }
+        }
+      }
+    },
+    "/api/v1/change-password": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Change password (authenticated)",
+        "description": "Change the password for the currently authenticated user. Requires the old password and a new password. Accepts access token in Authorization header (Bearer) or in the request body.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePasswordRequest" },
+              "example": { "oldPassword": "oldPassword123", "newPassword": "newSecurePass456" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Password changed successfully" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/profile": {
+      "patch": {
+        "tags": ["Authentication"],
+        "summary": "Update user profile",
+        "description": "Update the profile information for the currently authenticated user. Accepts access token in Authorization header (Bearer) or in the request body.",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProfileRequest" },
+              "example": { "firstName": "John", "lastName": "Doe", "phone": "+1234567890" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Profile updated successfully" }
+        }
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get current user profile",
+        "description": "Returns the profile of the currently authenticated user. Requires a valid JWT access token.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Update own profile (authenticated)",
+        "description": "Partially update the authenticated user's own profile.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstName": { "type": "string" },
+                  "lastName": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "avatar": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Profile updated" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "List all users (admin)",
+        "description": "Retrieve a paginated list of all users. Requires Admin role with user:read permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 }, "description": "Page number" },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 }, "description": "Items per page" },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" }, "description": "Sort field" },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] }, "description": "Sort order" },
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "description": "Search query" },
+          { "in": "query", "name": "role", "schema": { "type": "string", "enum": ["Admin", "Customer"] }, "description": "Filter by role" },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" }, "description": "Filter by active status" },
+          { "in": "query", "name": "verified", "schema": { "type": "boolean" }, "description": "Filter by email verification status" }
+        ],
+        "responses": {
+          "200": { "description": "List of users" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user by ID (admin)",
+        "description": "Retrieve detailed information about a specific user by their ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "User ID" }
+        ],
+        "responses": {
+          "200": { "description": "User details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Replace user (admin)",
+        "description": "Fully replace a user's data. Requires Admin role with user:update permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "role": { "type": "string", "enum": ["Admin", "Customer"] },
+                  "profile": {
+                    "type": "object",
+                    "properties": {
+                      "firstName": { "type": "string" },
+                      "lastName": { "type": "string" },
+                      "phone": { "type": "string" }
+                    }
+                  },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "User updated" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "User not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Soft-delete user (admin)",
+        "description": "Perform a soft-delete on a user account, marking it as inactive instead of removing it from the database.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "User deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/v1/users/{id}/block": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Block a user (admin)",
+        "description": "Block a user account, preventing them from logging in.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BlockUserRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "User blocked" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/users/{id}/unblock": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Unblock a user (admin)",
+        "description": "Unblock a previously blocked user account.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "User unblocked" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/users/{id}/role": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "Change user role (admin)",
+        "description": "Change the role of a user. Requires Admin role with user:role permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangeRoleRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Role changed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/users/{id}/restore": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Restore soft-deleted user (admin)",
+        "description": "Restore a previously soft-deleted user account.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "User restored" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "User not found" }
+        }
+      }
+    },
+    "/api/v1/cms/status": {
+      "get": {
+        "tags": ["CMS"],
+        "summary": "Check CMS service status",
+        "description": "Health check endpoint for the CMS service.",
+        "security": [],
+        "responses": {
+          "200": { "description": "CMS service is healthy" }
+        }
+      }
+    },
+    "/api/v1/cms/hero": {
+      "get": {
+        "tags": ["CMS"],
+        "summary": "List hero section content",
+        "description": "Retrieve all hero section content items. Public endpoint.",
+        "security": [],
+        "responses": {
+          "200": { "description": "List of hero content items" }
+        }
+      },
+      "post": {
+        "tags": ["CMS"],
+        "summary": "Create hero section content (admin)",
+        "description": "Create a new hero section content entry. Requires Admin role with cms:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CMSContentRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Hero content created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/cms/hero/{id}": {
+      "get": {
+        "tags": ["CMS"],
+        "summary": "Get hero content by ID",
+        "description": "Retrieve a specific hero section content item by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Content ID" }
+        ],
+        "responses": {
+          "200": { "description": "Hero content item" },
+          "404": { "description": "Content not found" }
+        }
+      },
+      "put": {
+        "tags": ["CMS"],
+        "summary": "Upsert hero content (admin)",
+        "description": "Fully replace a hero section content entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CMSContentRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Hero content updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "patch": {
+        "tags": ["CMS"],
+        "summary": "Patch hero content (admin)",
+        "description": "Partially update a hero section content entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": { "type": "object" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Hero content patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "delete": {
+        "tags": ["CMS"],
+        "summary": "Delete hero content (admin)",
+        "description": "Delete a hero section content entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Hero content deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/markets": {
+      "get": {
+        "tags": ["Markets"],
+        "summary": "List all markets",
+        "description": "Retrieve a paginated list of all markets. Supports filtering by active status, type, and search query.",
+        "security": [],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 }, "description": "Page number" },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 }, "description": "Items per page" },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" }, "description": "Sort field" },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] }, "description": "Sort order" },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" }, "description": "Filter by active status" },
+          { "in": "query", "name": "type", "schema": { "type": "string" }, "description": "Filter by market type" },
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "description": "Search query" }
+        ],
+        "responses": {
+          "200": { "description": "List of markets" }
+        }
+      },
+      "post": {
+        "tags": ["Markets"],
+        "summary": "Create a new market (admin)",
+        "description": "Create a new market entry. Requires Admin role with cms:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MarketCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Market created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/markets/{id}": {
+      "get": {
+        "tags": ["Markets"],
+        "summary": "Get market by ID",
+        "description": "Retrieve a specific market by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Market ID" }
+        ],
+        "responses": {
+          "200": { "description": "Market details" },
+          "404": { "description": "Market not found" }
+        }
+      },
+      "put": {
+        "tags": ["Markets"],
+        "summary": "Update market (admin)",
+        "description": "Fully replace a market entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MarketCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Market updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Market not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Markets"],
+        "summary": "Patch market (admin)",
+        "description": "Partially update a market entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "icon": { "type": "string" },
+                  "order": { "type": "integer" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Market patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Market not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Markets"],
+        "summary": "Delete market (admin)",
+        "description": "Delete a market entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Market deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/markets/slug/{slug}": {
+      "get": {
+        "tags": ["Markets"],
+        "summary": "Get market by slug",
+        "description": "Retrieve a specific market by its URL-friendly slug.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "slug", "required": true, "schema": { "type": "string" }, "description": "Market slug" }
+        ],
+        "responses": {
+          "200": { "description": "Market details" },
+          "404": { "description": "Market not found" }
+        }
+      }
+    },
+    "/api/v1/platforms": {
+      "get": {
+        "tags": ["Platforms"],
+        "summary": "List all trading platforms",
+        "description": "Retrieve a paginated list of all trading platforms. Supports filtering and search.",
+        "security": [],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of platforms" }
+        }
+      },
+      "post": {
+        "tags": ["Platforms"],
+        "summary": "Create a trading platform (admin)",
+        "description": "Create a new trading platform entry. Requires Admin role with cms:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlatformCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Platform created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/platforms/{id}": {
+      "get": {
+        "tags": ["Platforms"],
+        "summary": "Get platform by ID",
+        "description": "Retrieve a specific trading platform by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Platform details" },
+          "404": { "description": "Platform not found" }
+        }
+      },
+      "put": {
+        "tags": ["Platforms"],
+        "summary": "Update platform (admin)",
+        "description": "Fully replace a trading platform entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlatformCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Platform updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "patch": {
+        "tags": ["Platforms"],
+        "summary": "Patch platform (admin)",
+        "description": "Partially update a trading platform entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "logo": { "type": "string" },
+                  "features": { "type": "array", "items": { "type": "string" } },
+                  "supportedMarkets": { "type": "array", "items": { "type": "string" } },
+                  "downloadLinks": { "type": "object" },
+                  "order": { "type": "integer" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Platform patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "delete": {
+        "tags": ["Platforms"],
+        "summary": "Delete platform (admin)",
+        "description": "Delete a trading platform entry.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Platform deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/platforms/slug/{slug}": {
+      "get": {
+        "tags": ["Platforms"],
+        "summary": "Get platform by slug",
+        "description": "Retrieve a specific trading platform by its URL-friendly slug.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "slug", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Platform details" },
+          "404": { "description": "Platform not found" }
+        }
+      }
+    },
+    "/api/v1/blog": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "List published blog posts",
+        "description": "Retrieve a paginated list of published blog posts. Supports filtering, sorting, and search.",
+        "security": [],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of blog posts" }
+        }
+      },
+      "post": {
+        "tags": ["Blog"],
+        "summary": "Create a blog post (admin)",
+        "description": "Create a new blog post. Requires Admin role with cms:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BlogCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Blog post created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/blog/{id}": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "Get blog post by ID",
+        "description": "Retrieve a specific published blog post by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Blog post details" },
+          "404": { "description": "Blog post not found" }
+        }
+      },
+      "put": {
+        "tags": ["Blog"],
+        "summary": "Update blog post (admin)",
+        "description": "Fully replace a blog post. Requires Admin role with cms:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BlogCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Blog post updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Blog post not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Blog"],
+        "summary": "Patch blog post (admin)",
+        "description": "Partially update a blog post.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "content": { "type": "string" },
+                  "excerpt": { "type": "string" },
+                  "coverImage": { "type": "string" },
+                  "author": { "type": "string" },
+                  "category": { "type": "string" },
+                  "tags": { "type": "array", "items": { "type": "string" } },
+                  "status": { "type": "string", "enum": ["draft", "published"] },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Blog post patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Blog post not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Blog"],
+        "summary": "Delete blog post (admin)",
+        "description": "Delete a blog post.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Blog post deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/blog/slug/{slug}": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "Get blog post by slug",
+        "description": "Retrieve a specific published blog post by its URL-friendly slug.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "slug", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Blog post details" },
+          "404": { "description": "Blog post not found" }
+        }
+      }
+    },
+    "/api/v1/blog/categories": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "List blog categories",
+        "description": "Retrieve all blog categories. Public endpoint.",
+        "security": [],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } }
+        ],
+        "responses": { "200": { "description": "List of categories" } }
+      },
+      "post": {
+        "tags": ["Blog"],
+        "summary": "Create blog category (admin)",
+        "description": "Create a new blog category. Requires Admin role with cms:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "example": "Forex Education" },
+                  "slug": { "type": "string", "example": "forex-education" },
+                  "description": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Category created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/blog/categories/{id}": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "Get blog category by ID",
+        "description": "Retrieve a specific blog category by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Category details" },
+          "404": { "description": "Category not found" }
+        }
+      },
+      "put": {
+        "tags": ["Blog"],
+        "summary": "Update blog category (admin)",
+        "description": "Fully replace a blog category.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "description": { "type": "string" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Category updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "patch": {
+        "tags": ["Blog"],
+        "summary": "Patch blog category (admin)",
+        "description": "Partially update a blog category.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "description": { "type": "string" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Category patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "delete": {
+        "tags": ["Blog"],
+        "summary": "Delete blog category (admin)",
+        "description": "Delete a blog category.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Category deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/blog/tags": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "List blog tags",
+        "description": "Retrieve all blog tags. Public endpoint.",
+        "security": [],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } }
+        ],
+        "responses": { "200": { "description": "List of tags" } }
+      },
+      "post": {
+        "tags": ["Blog"],
+        "summary": "Create blog tag (admin)",
+        "description": "Create a new blog tag.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string", "example": "Beginners" },
+                  "slug": { "type": "string", "example": "beginners" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Tag created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/blog/tags/{id}": {
+      "get": {
+        "tags": ["Blog"],
+        "summary": "Get blog tag by ID",
+        "description": "Retrieve a specific blog tag by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Tag details" },
+          "404": { "description": "Tag not found" }
+        }
+      },
+      "put": {
+        "tags": ["Blog"],
+        "summary": "Update blog tag (admin)",
+        "description": "Fully replace a blog tag.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Tag updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "patch": {
+        "tags": ["Blog"],
+        "summary": "Patch blog tag (admin)",
+        "description": "Partially update a blog tag.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "slug": { "type": "string" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Tag patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      },
+      "delete": {
+        "tags": ["Blog"],
+        "summary": "Delete blog tag (admin)",
+        "description": "Delete a blog tag.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Tag deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/contact": {
+      "post": {
+        "tags": ["Contact"],
+        "summary": "Submit a contact message",
+        "description": "Submit a new contact inquiry. Public endpoint. All required fields must be provided.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Contact message created" },
+          "400": { "description": "Validation failed" }
+        }
+      },
+      "get": {
+        "tags": ["Contact"],
+        "summary": "List contact messages (admin)",
+        "description": "Retrieve a paginated list of all contact messages. Requires Admin role with contact:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string", "enum": ["createdAt", "updatedAt", "status", "repliedAt"] } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "status", "schema": { "type": "string", "enum": ["new", "in_progress", "replied", "closed"] } },
+          { "in": "query", "name": "assignedTo", "schema": { "type": "string" } },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": { "description": "List of contacts" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/contact/status/{id}": {
+      "get": {
+        "tags": ["Contact"],
+        "summary": "Get contact status (public)",
+        "description": "Public endpoint to check the status of a submitted contact message by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Contact ID" }
+        ],
+        "responses": {
+          "200": { "description": "Contact status" },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/api/v1/contact/{id}": {
+      "get": {
+        "tags": ["Contact"],
+        "summary": "Get contact by ID (admin)",
+        "description": "Retrieve a specific contact message by its ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Contact details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      },
+      "put": {
+        "tags": ["Contact"],
+        "summary": "Replace contact (admin)",
+        "description": "Fully replace a contact message.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Contact updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Contact"],
+        "summary": "Partially update contact (admin)",
+        "description": "Partially update a contact message.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "country": { "type": "string" },
+                  "subject": { "type": "string" },
+                  "message": { "type": "string" },
+                  "department": { "type": "string" },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Contact patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Contact"],
+        "summary": "Soft-delete contact (admin)",
+        "description": "Soft-delete a contact message, marking it as inactive.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Contact deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/api/v1/contact/{id}/status": {
+      "patch": {
+        "tags": ["Contact"],
+        "summary": "Update contact status (admin)",
+        "description": "Update the status of a contact message (new, in_progress, replied, closed).",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["new", "in_progress", "replied", "closed"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/api/v1/contact/{id}/assign": {
+      "patch": {
+        "tags": ["Contact"],
+        "summary": "Assign contact (admin)",
+        "description": "Assign a contact message to a team member for handling.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "assignedTo": { "type": "string", "description": "User ID to assign to" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Contact assigned" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/api/v1/contact/{id}/reply": {
+      "post": {
+        "tags": ["Contact"],
+        "summary": "Reply to contact (admin)",
+        "description": "Send a reply to a contact inquiry. Updates the status to 'replied'.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactReplyRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Reply sent" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Contact not found" }
+        }
+      }
+    },
+    "/api/v1/newsletter/subscribe": {
+      "post": {
+        "tags": ["Newsletter"],
+        "summary": "Subscribe to newsletter",
+        "description": "Subscribe an email address to the newsletter. Returns 201 on success, 409 if already subscribed.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NewsletterSubscribeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Subscribed successfully" },
+          "400": { "description": "Validation failed" },
+          "409": { "description": "Already subscribed" }
+        }
+      }
+    },
+    "/api/v1/newsletter/unsubscribe": {
+      "post": {
+        "tags": ["Newsletter"],
+        "summary": "Unsubscribe from newsletter",
+        "description": "Unsubscribe an email address from the newsletter.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Unsubscribed successfully" },
+          "400": { "description": "Validation failed" },
+          "404": { "description": "Subscriber not found" }
+        }
+      }
+    },
+    "/api/v1/newsletter/status/{email}": {
+      "get": {
+        "tags": ["Newsletter"],
+        "summary": "Get subscription status",
+        "description": "Public endpoint to check the subscription status of an email address.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "email", "required": true, "schema": { "type": "string", "format": "email" }, "description": "Subscriber email" }
+        ],
+        "responses": {
+          "200": { "description": "Subscription status" },
+          "400": { "description": "Validation failed" },
+          "404": { "description": "Subscriber not found" }
+        }
+      }
+    },
+    "/api/v1/newsletter": {
+      "get": {
+        "tags": ["Newsletter"],
+        "summary": "List subscribers (admin)",
+        "description": "Retrieve a paginated list of all newsletter subscribers. Requires Admin role with newsletter:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string", "enum": ["email", "createdAt", "subscribedAt", "updatedAt"] } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "status", "schema": { "type": "string", "enum": ["subscribed", "unsubscribed"] } },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" } },
+          { "in": "query", "name": "source", "schema": { "type": "string" } },
+          { "in": "query", "name": "subscribedFrom", "schema": { "type": "string", "format": "date" } },
+          { "in": "query", "name": "subscribedTo", "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": {
+          "200": { "description": "List of subscribers" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/newsletter/{id}": {
+      "get": {
+        "tags": ["Newsletter"],
+        "summary": "Get subscriber by ID (admin)",
+        "description": "Retrieve a specific newsletter subscriber by their ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Subscriber details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Subscriber not found" }
+        }
+      },
+      "put": {
+        "tags": ["Newsletter"],
+        "summary": "Replace subscriber (admin)",
+        "description": "Fully replace a newsletter subscriber's data.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NewsletterUpdateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Subscriber updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Subscriber not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Newsletter"],
+        "summary": "Partially update subscriber (admin)",
+        "description": "Partially update a newsletter subscriber's data.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NewsletterUpdateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Subscriber patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Subscriber not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Newsletter"],
+        "summary": "Soft-delete subscriber (admin)",
+        "description": "Soft-delete a newsletter subscriber.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Subscriber deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Subscriber not found" }
+        }
+      }
+    },
+    "/api/v1/newsletter/{id}/status": {
+      "patch": {
+        "tags": ["Newsletter"],
+        "summary": "Update subscriber status (admin)",
+        "description": "Update the subscription status (subscribed/unsubscribed) of a newsletter subscriber.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NewsletterStatusRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Subscriber not found" }
+        }
+      }
+    },
+    "/api/v1/careers": {
+      "get": {
+        "tags": ["Careers"],
+        "summary": "List open job positions",
+        "description": "Retrieve a paginated list of open job positions. Supports filtering by department, location, employment type, experience level, and featured status.",
+        "security": [],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "featured", "schema": { "type": "boolean" } },
+          { "in": "query", "name": "department", "schema": { "type": "string" } },
+          { "in": "query", "name": "location", "schema": { "type": "string" } },
+          { "in": "query", "name": "employmentType", "schema": { "type": "string", "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"] } },
+          { "in": "query", "name": "experienceLevel", "schema": { "type": "string", "enum": ["Entry", "Junior", "Mid-Level", "Senior", "Lead", "Manager", "Director", "Executive"] } }
+        ],
+        "responses": {
+          "200": { "description": "List of open jobs" }
+        }
+      },
+      "post": {
+        "tags": ["Careers Admin"],
+        "summary": "Create a new job (admin)",
+        "description": "Create a new job position. Requires Admin role with careers:write permission.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JobCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Job created" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/careers/{id}": {
+      "get": {
+        "tags": ["Careers"],
+        "summary": "Get job by ID",
+        "description": "Retrieve a specific open job position by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Job details" },
+          "404": { "description": "Job not found" }
+        }
+      },
+      "put": {
+        "tags": ["Careers Admin"],
+        "summary": "Update job (admin)",
+        "description": "Fully replace a job position.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JobCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Job updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Job not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Careers Admin"],
+        "summary": "Patch job (admin)",
+        "description": "Partially update a job position.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "department": { "type": "string" },
+                  "location": { "type": "string" },
+                  "employmentType": { "type": "string", "enum": ["Full-time", "Part-time", "Contract", "Freelance", "Internship", "Temporary"] },
+                  "experienceLevel": { "type": "string", "enum": ["Entry", "Junior", "Mid-Level", "Senior", "Lead", "Manager", "Director", "Executive"] },
+                  "requirements": { "type": "array", "items": { "type": "string" } },
+                  "responsibilities": { "type": "array", "items": { "type": "string" } },
+                  "salaryMin": { "type": "number" },
+                  "salaryMax": { "type": "number" },
+                  "currency": { "type": "string" },
+                  "featured": { "type": "boolean" },
+                  "status": { "type": "string", "enum": ["open", "closed", "draft"] },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Job patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Job not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Careers Admin"],
+        "summary": "Delete job (admin)",
+        "description": "Delete a job position.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Job deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/careers/slug/{slug}": {
+      "get": {
+        "tags": ["Careers"],
+        "summary": "Get job by slug",
+        "description": "Retrieve a specific open job position by its URL-friendly slug.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "slug", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Job details" },
+          "404": { "description": "Job not found" }
+        }
+      }
+    },
+    "/api/v1/careers/{id}/apply": {
+      "post": {
+        "tags": ["Careers"],
+        "summary": "Apply for a job",
+        "description": "Submit a job application for a specific position.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" }, "description": "Job ID" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ApplicationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Application submitted" },
+          "400": { "description": "Validation failed" },
+          "404": { "description": "Job not found" }
+        }
+      }
+    },
+    "/api/v1/careers/application/{applicationId}/status": {
+      "get": {
+        "tags": ["Careers"],
+        "summary": "Check application status",
+        "description": "Public endpoint to check the status of a submitted job application.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "applicationId", "required": true, "schema": { "type": "string" }, "description": "Application ID" }
+        ],
+        "responses": {
+          "200": { "description": "Application status" },
+          "404": { "description": "Application not found" }
+        }
+      }
+    },
+    "/api/v1/careers/admin/jobs": {
+      "get": {
+        "tags": ["Careers Admin"],
+        "summary": "List all jobs (admin)",
+        "description": "Retrieve a paginated list of all jobs, including closed and draft ones.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "status", "schema": { "type": "string", "enum": ["open", "closed", "draft"] } },
+          { "in": "query", "name": "department", "schema": { "type": "string" } },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": { "description": "List of all jobs" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/careers/admin/applications": {
+      "get": {
+        "tags": ["Careers Admin"],
+        "summary": "List all applications (admin)",
+        "description": "Retrieve a paginated list of all job applications.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "status", "schema": { "type": "string", "enum": ["new", "reviewed", "shortlisted", "interviewed", "offered", "hired", "rejected"] } },
+          { "in": "query", "name": "jobId", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of applications" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/careers/admin/applications/{id}": {
+      "get": {
+        "tags": ["Careers Admin"],
+        "summary": "Get application by ID (admin)",
+        "description": "Retrieve a specific job application by its ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Application details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Application not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Careers Admin"],
+        "summary": "Delete application (admin)",
+        "description": "Delete a job application.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Application deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Application not found" }
+        }
+      }
+    },
+    "/api/v1/careers/admin/applications/{id}/status": {
+      "patch": {
+        "tags": ["Careers Admin"],
+        "summary": "Update application status (admin)",
+        "description": "Update the status of a job application.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ApplicationStatusRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Application not found" }
+        }
+      }
+    },
+    "/api/v1/careers/admin/applications/{id}/assign": {
+      "patch": {
+        "tags": ["Careers Admin"],
+        "summary": "Assign application (admin)",
+        "description": "Assign a job application to an admin for review.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["assignedTo"],
+                "properties": {
+                  "assignedTo": { "type": "string", "description": "Admin user ID" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Application assigned" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Application not found" }
+        }
+      }
+    },
+    "/api/v1/careers/admin/applications/{id}/notes": {
+      "patch": {
+        "tags": ["Careers Admin"],
+        "summary": "Update application notes (admin)",
+        "description": "Update internal notes on a job application.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["notes"],
+                "properties": {
+                  "notes": { "type": "string", "description": "Internal notes" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Notes updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Application not found" }
+        }
+      }
+    },
+    "/api/v1/partners/register": {
+      "post": {
+        "tags": ["Partners"],
+        "summary": "Register as a partner",
+        "description": "Submit a partner registration request. Public endpoint.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PartnerRegisterRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Partner registration submitted" },
+          "400": { "description": "Validation failed" },
+          "409": { "description": "Email already registered" }
+        }
+      }
+    },
+    "/api/v1/partners/referral": {
+      "post": {
+        "tags": ["Partners"],
+        "summary": "Submit a client referral",
+        "description": "Submit a client referral through a partner. Public endpoint.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReferralSubmitRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Referral submitted" },
+          "400": { "description": "Validation failed" }
+        }
+      }
+    },
+    "/api/v1/partners/status/{id}": {
+      "get": {
+        "tags": ["Partners"],
+        "summary": "Check partner registration status",
+        "description": "Public endpoint to check the status of a partner registration.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Partner status" },
+          "404": { "description": "Partner not found" }
+        }
+      }
+    },
+    "/api/v1/partners": {
+      "get": {
+        "tags": ["Partners Admin"],
+        "summary": "List all partners (admin)",
+        "description": "Retrieve a paginated list of all partner registrations.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "status", "schema": { "type": "string", "enum": ["pending", "under_review", "approved", "rejected"] } },
+          { "in": "query", "name": "partnerType", "schema": { "type": "string", "enum": ["Introducing Broker (IB)", "Affiliate Partner", "Regional Partner", "Business Partner", "Institutional Partner"] } },
+          { "in": "query", "name": "assignedTo", "schema": { "type": "string" } },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" } }
+        ],
+        "responses": {
+          "200": { "description": "List of partners" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/partners/{id}": {
+      "get": {
+        "tags": ["Partners Admin"],
+        "summary": "Get partner by ID (admin)",
+        "description": "Retrieve a specific partner registration by ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Partner details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      },
+      "put": {
+        "tags": ["Partners Admin"],
+        "summary": "Replace partner (admin)",
+        "description": "Fully replace a partner registration.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": { "type": "string" },
+                  "companyName": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "country": { "type": "string" },
+                  "city": { "type": "string" },
+                  "website": { "type": "string", "format": "url" },
+                  "partnerType": { "type": "string", "enum": ["Introducing Broker (IB)", "Affiliate Partner", "Regional Partner", "Business Partner", "Institutional Partner"] },
+                  "experience": { "type": "string" },
+                  "monthlyClients": { "type": "string" },
+                  "businessDescription": { "type": "string" },
+                  "referralSource": { "type": "string" },
+                  "status": { "type": "string", "enum": ["pending", "under_review", "approved", "rejected"] },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Partner updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Partners Admin"],
+        "summary": "Partially update partner (admin)",
+        "description": "Partially update a partner registration.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": { "type": "string" },
+                  "companyName": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "country": { "type": "string" },
+                  "city": { "type": "string" },
+                  "website": { "type": "string", "format": "url" },
+                  "partnerType": { "type": "string", "enum": ["Introducing Broker (IB)", "Affiliate Partner", "Regional Partner", "Business Partner", "Institutional Partner"] },
+                  "experience": { "type": "string" },
+                  "monthlyClients": { "type": "string" },
+                  "businessDescription": { "type": "string" },
+                  "referralSource": { "type": "string" },
+                  "status": { "type": "string", "enum": ["pending", "under_review", "approved", "rejected"] },
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Partner patched" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Partners Admin"],
+        "summary": "Soft-delete partner (admin)",
+        "description": "Soft-delete a partner registration.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Partner deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      }
+    },
+    "/api/v1/partners/{id}/status": {
+      "patch": {
+        "tags": ["Partners Admin"],
+        "summary": "Update partner status (admin)",
+        "description": "Update the approval status of a partner registration.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["pending", "under_review", "approved", "rejected"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      }
+    },
+    "/api/v1/partners/{id}/assign": {
+      "patch": {
+        "tags": ["Partners Admin"],
+        "summary": "Assign partner (admin)",
+        "description": "Assign a partner registration to an admin for processing.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["assignedTo"],
+                "properties": {
+                  "assignedTo": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Partner assigned" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      }
+    },
+    "/api/v1/partners/{id}/notes": {
+      "patch": {
+        "tags": ["Partners Admin"],
+        "summary": "Update partner notes (admin)",
+        "description": "Update internal notes on a partner registration.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["notes"],
+                "properties": {
+                  "notes": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Notes updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Partner not found" }
+        }
+      }
+    },
+    "/api/v1/partners/referrals": {
+      "get": {
+        "tags": ["Partners Admin"],
+        "summary": "List all referrals (admin)",
+        "description": "Retrieve a paginated list of all client referrals submitted by partners.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "status", "schema": { "type": "string", "enum": ["new", "contacted", "qualified", "converted", "closed"] } },
+          { "in": "query", "name": "referredBy", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of referrals" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/partners/referrals/{id}": {
+      "get": {
+        "tags": ["Partners Admin"],
+        "summary": "Get referral by ID (admin)",
+        "description": "Retrieve a specific referral by its ID.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Referral details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Referral not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Partners Admin"],
+        "summary": "Soft-delete referral (admin)",
+        "description": "Soft-delete a client referral.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Referral deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Referral not found" }
+        }
+      }
+    },
+    "/api/v1/partners/referrals/{id}/status": {
+      "patch": {
+        "tags": ["Partners Admin"],
+        "summary": "Update referral status (admin)",
+        "description": "Update the status of a client referral.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": { "type": "string", "enum": ["new", "contacted", "qualified", "converted", "closed"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Referral not found" }
+        }
+      }
+    },
+    "/api/v1/uploads/file/{fileName}": {
+      "get": {
+        "tags": ["Uploads"],
+        "summary": "Serve file by filename (public)",
+        "description": "Serve an uploaded file directly by its filename. Public endpoint for accessing uploaded files.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "fileName", "required": true, "schema": { "type": "string" }, "description": "File name" }
+        ],
+        "responses": {
+          "200": { "description": "File stream" },
+          "404": { "description": "File not found" }
+        }
+      }
+    },
+    "/api/v1/uploads/{id}": {
+      "get": {
+        "tags": ["Uploads"],
+        "summary": "Get file metadata by ID (public)",
+        "description": "Retrieve metadata about a specific uploaded file by its ID.",
+        "security": [],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "File metadata" },
+          "404": { "description": "File not found" }
+        }
+      },
+      "patch": {
+        "tags": ["Uploads Admin"],
+        "summary": "Update file metadata (admin)",
+        "description": "Update metadata of an uploaded file.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "active": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "File updated" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "File not found" }
+        }
+      },
+      "delete": {
+        "tags": ["Uploads Admin"],
+        "summary": "Soft-delete file (admin)",
+        "description": "Soft-delete an uploaded file, marking it as inactive.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "File deleted" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "File not found" }
+        }
+      }
+    },
+    "/api/v1/uploads/avatar": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload user avatar (admin)",
+        "description": "Upload a user avatar image. Accepts image files (JPG, PNG, GIF, WebP). Max file size applies per category.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary", "description": "Image file (JPG, PNG, GIF, WebP)" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Avatar uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/blog-image": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload blog image (admin)",
+        "description": "Upload an image for blog posts. Accepts image files.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Blog image uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/cms-image": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload CMS image (admin)",
+        "description": "Upload an image for CMS content. Accepts image files.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "CMS image uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/platform-image": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload platform image (admin)",
+        "description": "Upload an image for a trading platform. Accepts image files.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Platform image uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/market-icon": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload market icon (admin)",
+        "description": "Upload an icon for a market. Accepts image files.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Market icon uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/resume": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload resume file (admin)",
+        "description": "Upload a resume file. Accepts PDF and DOCX files.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary", "description": "Resume file (PDF, DOCX)" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Resume uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/document": {
+      "post": {
+        "tags": ["Uploads Admin"],
+        "summary": "Upload general document (admin)",
+        "description": "Upload a general document file.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Document uploaded" },
+          "400": { "description": "Validation failed" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads": {
+      "get": {
+        "tags": ["Uploads Admin"],
+        "summary": "List uploaded files (admin)",
+        "description": "Retrieve a paginated list of all uploaded files. Supports filtering by category, mime type, active status, and search.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "page", "schema": { "type": "integer", "minimum": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "minimum": 1, "maximum": 100 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"] } },
+          { "in": "query", "name": "category", "schema": { "type": "string", "enum": ["avatar", "blog", "cms", "platform", "market", "partner", "resume", "document"] } },
+          { "in": "query", "name": "mimeType", "schema": { "type": "string" } },
+          { "in": "query", "name": "active", "schema": { "type": "boolean" } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "List of files" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/uploads/{id}/details": {
+      "get": {
+        "tags": ["Uploads Admin"],
+        "summary": "Get file details by ID (admin)",
+        "description": "Retrieve detailed information about a specific uploaded file.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "File details" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "File not found" }
+        }
+      }
+    },
+    "/api/v1/dashboard": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get full dashboard data",
+        "description": "Returns aggregated statistics, dashboard cards, and recent activity. Admin only. Requires dashboard:read permission.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "default": 10 }, "description": "Limit for recent activity items" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard data fetched",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DashboardResponse" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/dashboard/statistics": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get aggregated statistics",
+        "description": "Returns counts for users, blog, CMS, markets, platforms, contact, newsletter, careers, partners, and uploads. Admin only.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Statistics fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/DashboardStatistics" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/dashboard/recent": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get recent items by type",
+        "description": "Returns recent items filtered by type (users, blog, contacts, applications, partners, uploads) or all types if not specified. Admin only.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "type", "schema": { "type": "string", "enum": ["users", "blog", "contacts", "applications", "partners", "uploads"] }, "description": "Type of recent items to fetch" },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "default": 10 }, "description": "Number of items to return" }
+        ],
+        "responses": {
+          "200": { "description": "Recent items fetched" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/dashboard/system": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get system health information",
+        "description": "Returns API status, server status, uptime, modules, routes, version, environment, and memory usage. Admin only.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "System health fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": { "$ref": "#/components/schemas/SystemHealth" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/dashboard/activity": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Get aggregated activity feed",
+        "description": "Returns a sorted feed of recent activities across users, blog, contacts, applications, partners, and uploads. Admin only.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "default": 20 }, "description": "Number of activity items (max 100)" }
+        ],
+        "responses": {
+          "200": { "description": "Activity feed fetched" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Global search across all modules",
+        "description": "Search across all supported modules (users, cms, markets, platforms, blog, contact, newsletter, careers, partners, uploads). Public searches only return active records. Admin searches (authenticated) may return all records. Supports full-text, keyword, partial, and exact matching.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "query", "name": "q", "schema": { "type": "string" }, "description": "Search query" },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "default": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "default": 20 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string", "default": "createdAt" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } },
+          { "in": "query", "name": "active", "schema": { "type": "string", "enum": ["true", "false"] } },
+          { "in": "query", "name": "status", "schema": { "type": "string" } },
+          { "in": "query", "name": "category", "schema": { "type": "string" } },
+          { "in": "query", "name": "type", "schema": { "type": "string" } },
+          { "in": "query", "name": "country", "schema": { "type": "string" } },
+          { "in": "query", "name": "department", "schema": { "type": "string" } },
+          { "in": "query", "name": "partnerType", "schema": { "type": "string" } },
+          { "in": "query", "name": "market", "schema": { "type": "string" } },
+          { "in": "query", "name": "platform", "schema": { "type": "string" } },
+          { "in": "query", "name": "dateFrom", "schema": { "type": "string", "format": "date-time" } },
+          { "in": "query", "name": "dateTo", "schema": { "type": "string", "format": "date-time" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results grouped by module",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SearchResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/search/{module}": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Search within a specific module",
+        "description": "Search within one supported module (users, cms, markets, platforms, blog, contact, newsletter, careers, partners, uploads). Admin modules (contact, newsletter, partners, uploads) require authentication. Public modules only return active/published/open/approved records.",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "module", "required": true, "schema": { "type": "string", "enum": ["users", "cms", "markets", "platforms", "blog", "contact", "newsletter", "careers", "partners", "uploads"] } },
+          { "in": "query", "name": "q", "schema": { "type": "string" } },
+          { "in": "query", "name": "page", "schema": { "type": "integer", "default": 1 } },
+          { "in": "query", "name": "limit", "schema": { "type": "integer", "default": 20 } },
+          { "in": "query", "name": "sortBy", "schema": { "type": "string", "default": "createdAt" } },
+          { "in": "query", "name": "sortOrder", "schema": { "type": "string", "enum": ["asc", "desc"], "default": "desc" } },
+          { "in": "query", "name": "active", "schema": { "type": "string", "enum": ["true", "false"] } },
+          { "in": "query", "name": "status", "schema": { "type": "string" } },
+          { "in": "query", "name": "category", "schema": { "type": "string" } },
+          { "in": "query", "name": "type", "schema": { "type": "string" } },
+          { "in": "query", "name": "country", "schema": { "type": "string" } },
+          { "in": "query", "name": "department", "schema": { "type": "string" } },
+          { "in": "query", "name": "partnerType", "schema": { "type": "string" } },
+          { "in": "query", "name": "market", "schema": { "type": "string" } },
+          { "in": "query", "name": "platform", "schema": { "type": "string" } },
+          { "in": "query", "name": "dateFrom", "schema": { "type": "string", "format": "date-time" } },
+          { "in": "query", "name": "dateTo", "schema": { "type": "string", "format": "date-time" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Module search results",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ModuleSearchResponse" }
+              }
+            }
+          },
+          "400": { "description": "Validation error or unsupported module" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/api/v1/docs": {
+      "get": {
+        "tags": ["Documentation"],
+        "summary": "Swagger UI",
+        "description": "Interactive Swagger UI documentation for the Vertex Markets API.",
+        "security": [],
+        "responses": {
+          "200": { "description": "Swagger UI HTML page" }
+        }
+      }
+    },
+    "/api/v1/docs.json": {
+      "get": {
+        "tags": ["Documentation"],
+        "summary": "Swagger JSON specification",
+        "description": "Returns the complete OpenAPI 3.0 specification as JSON.",
+        "security": [],
+        "responses": {
+          "200": { "description": "OpenAPI specification JSON" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "API health check",
+        "description": "Basic health check endpoint to verify the API server is running.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Server is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard/status": {
+      "get": {
+        "tags": ["Dashboard"],
+        "summary": "Check dashboard module status",
+        "description": "Simple health check for the dashboard module.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Dashboard module is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean", "example": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    { "name": "Authentication", "description": "User authentication and account management" },
+    { "name": "Users", "description": "User management for administrators" },
+    { "name": "CMS", "description": "Content management system for website content" },
+    { "name": "Markets", "description": "Trading markets management" },
+    { "name": "Platforms", "description": "Trading platforms management" },
+    { "name": "Blog", "description": "Blog posts, categories, and tags management" },
+    { "name": "Contact", "description": "Contact inquiries and management" },
+    { "name": "Newsletter", "description": "Newsletter subscription management" },
+    { "name": "Careers", "description": "Job listings and applications" },
+    { "name": "Careers Admin", "description": "Admin operations for careers module" },
+    { "name": "Partners", "description": "Partner registrations and referrals" },
+    { "name": "Partners Admin", "description": "Admin operations for partners module" },
+    { "name": "Uploads", "description": "File upload and serving" },
+    { "name": "Uploads Admin", "description": "Admin file upload management" },
+    { "name": "Dashboard", "description": "Admin dashboard and system health" },
+    { "name": "Search", "description": "Global and module-specific search" },
+    { "name": "Documentation", "description": "API documentation endpoints" },
+    { "name": "Health", "description": "Health check endpoints" }
+  ]
+}
+

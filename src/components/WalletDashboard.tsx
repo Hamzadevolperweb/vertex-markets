@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ArrowDownLeft, 
   ArrowUpRight, 
@@ -106,6 +106,21 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
   const [reservedMargin, setReservedMargin] = useState(12845.30);
   const [equity, setEquity] = useState(45387.06);
 
+  useEffect(() => {
+    import('../api/trading')
+      .then(({ fetchTradingProfile }) => fetchTradingProfile())
+      .then((p) => {
+        const w = p.wallet;
+        if (!w) return;
+        setAvailableBalance(w.availableBalance);
+        setTotalBalance(w.totalEquity);
+        setReservedMargin(w.lockedBalance);
+        setEquity(w.totalEquity);
+        setUnrealizedPnl(0);
+      })
+      .catch(() => undefined);
+  }, []);
+
   // Helper to trigger success toasts
   const triggerToast = (msg: string) => {
     setSuccessToast(msg);
@@ -123,18 +138,24 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
   };
 
   // Perform quick actions
-  const handleDepositSubmit = (e: React.FormEvent) => {
+  const handleDepositSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const val = parseFloat(depositAmount);
     if (isNaN(val) || val <= 0) return;
-    setTotalBalance(prev => prev + val);
-    setAvailableBalance(prev => prev + val);
-    setEquity(prev => prev + val);
-    setShowDepositModal(false);
-    triggerToast(`Successfully deposited $${val.toLocaleString()} via Bank Wire instantly!`);
+    try {
+      const { createDeposit } = await import('../api/trading');
+      await createDeposit(val, 'manual', { instant: true });
+      setTotalBalance((prev) => prev + val);
+      setAvailableBalance((prev) => prev + val);
+      setEquity((prev) => prev + val);
+      setShowDepositModal(false);
+      triggerToast(`Successfully deposited $${val.toLocaleString()}!`);
+    } catch (err: any) {
+      triggerToast(err.message || 'Deposit failed');
+    }
   };
 
-  const handleWithdrawSubmit = (e: React.FormEvent) => {
+  const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const val = parseFloat(withdrawAmount);
     if (isNaN(val) || val <= 0) return;
@@ -142,11 +163,17 @@ export default function WalletDashboard({ onLogout, onNavigate }: WalletDashboar
       triggerToast('Withdrawal amount exceeds available balance.');
       return;
     }
-    setTotalBalance(prev => prev - val);
-    setAvailableBalance(prev => prev - val);
-    setEquity(prev => prev - val);
-    setShowWithdrawModal(false);
-    triggerToast(`Withdrawal of $${val.toLocaleString()} requested. Pending bank wire dispatch.`);
+    try {
+      const { createWithdrawal } = await import('../api/trading');
+      await createWithdrawal(val, { account: 'wallet-ui' }, 'bank');
+      setTotalBalance((prev) => prev - val);
+      setAvailableBalance((prev) => prev - val);
+      setEquity((prev) => prev - val);
+      setShowWithdrawModal(false);
+      triggerToast(`Withdrawal of $${val.toLocaleString()} requested (pending approval).`);
+    } catch (err: any) {
+      triggerToast(err.message || 'Withdrawal failed');
+    }
   };
 
   const handleTransferSubmit = (e: React.FormEvent) => {

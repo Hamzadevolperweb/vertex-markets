@@ -104,16 +104,29 @@ export default function DepositDashboard({ onLogout, onNavigate }: DepositDashbo
     return finalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  const handleConfirmDeposit = () => {
+  const handleConfirmDeposit = async () => {
     if (numericAmount <= 0) {
       triggerToast("Please enter a valid deposit amount.");
       return;
     }
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
+    try {
+      const { createDeposit, confirmDemoPayment } = await import('../api/trading');
+      const method =
+        depositMethod === 'bank' ? 'bank' : depositMethod === 'card' ? 'card' : 'crypto';
+      const instant = method === 'bank';
+      const result = await createDeposit(numericAmount, method, { instant });
+      if (!instant && result?.deposit?.id) {
+        // Demo gateway: auto-confirm via webhook after "checkout"
+        await confirmDemoPayment(result.deposit.id);
+      }
       setShowSuccessModal(true);
-    }, 1800);
+      triggerToast('Deposit completed successfully.');
+    } catch (err: any) {
+      triggerToast(err.message || 'Deposit failed');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   // Get estimated arrival based on selected method

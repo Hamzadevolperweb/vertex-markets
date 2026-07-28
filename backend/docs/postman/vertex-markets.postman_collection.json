@@ -1,0 +1,1799 @@
+{
+  "info": {
+    "name": "Vertex Markets API",
+    "description": "Complete API collection for the Vertex Markets backend. Covers all modules including Authentication, Users, CMS, Markets, Platforms, Blog, Contact, Newsletter, Careers, Partners, Uploads, Dashboard, and Search.\n\n## Authentication\n\nThis collection uses Bearer token authentication. After logging in via the Login endpoint, the `accessToken` response will be automatically saved to the `accessToken` collection variable and used for subsequent requests.\n\n## Environment Variables\n\nCreate a Postman environment with the following variables:\n\n- `baseUrl` - API base URL (e.g., http://localhost:3000)\n- `accessToken` - JWT access token (auto-populated)\n- `adminEmail` - Admin login email\n- `adminPassword` - Admin login password\n- `userId` - Sample user ID\n- `marketId` - Sample market ID\n- `platformId` - Sample platform ID\n- `blogId` - Sample blog post ID\n- `contactId` - Sample contact ID\n- `newsletterId` - Sample newsletter subscriber ID\n- `careerId` - Sample job ID\n- `applicationId` - Sample application ID\n- `partnerId` - Sample partner ID\n- `referralId` - Sample referral ID\n- `fileId` - Sample file ID\n- `heroId` - Sample CMS hero section ID",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "adminEmail",
+      "value": "admin@vertexmarkets.com",
+      "type": "string"
+    },
+    {
+      "key": "adminPassword",
+      "value": "admin123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints including register, login, logout, token refresh, password management, email verification, and profile updates.",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.data && jsonData.data.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', jsonData.data.accessToken);",
+                  "  pm.environment.set('accessToken', jsonData.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "login"]
+            },
+            "description": "Authenticate with email and password. Returns a JWT access token that will be automatically saved for subsequent requests."
+          },
+          "response": [
+            {
+              "name": "Login Success",
+              "status": "OK",
+              "code": 200,
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIs...\",\n    \"user\": {\n      \"id\": \"user_abc123\",\n      \"email\": \"admin@vertexmarkets.com\",\n      \"role\": \"Admin\",\n      \"verified\": true\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"securePassword123\",\n  \"profile\": {\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phone\": \"+1234567890\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "register"]
+            },
+            "description": "Create a new user account. Returns user details and a verification token."
+          },
+          "response": [
+            {
+              "name": "Registration Success",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Registered successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"user_xyz789\",\n      \"email\": \"newuser@example.com\"\n    },\n    \"verificationToken\": \"ev_abc123...\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "logout"]
+            },
+            "description": "Logout by revoking the current refresh token."
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "refresh"]
+            },
+            "description": "Obtain a new access token using a valid refresh token."
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "forgot-password"]
+            },
+            "description": "Request a password reset. Returns a reset token in development."
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"rp_abc123...\",\n  \"newPassword\": \"newSecurePass456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reset-password"]
+            },
+            "description": "Complete the password reset flow using the token from forgot-password."
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"ev_abc123...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/verify-email",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "verify-email"]
+            },
+            "description": "Verify a user's email address using the verification token."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"currentPassword123\",\n  \"newPassword\": \"newSecurePass789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "change-password"]
+            },
+            "description": "Change the password for the authenticated user."
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"phone\": \"+1987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "profile"]
+            },
+            "description": "Update the profile of the currently authenticated user."
+          }
+        },
+        {
+          "name": "Auth Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "status"]
+            },
+            "description": "Health check for the authentication service."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "description": "User management endpoints. Self-service and admin operations.",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "description": "Get the profile of the currently authenticated user."
+          }
+        },
+        {
+          "name": "Update My Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"Name\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "description": "Partially update the authenticated user's own profile."
+          }
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all users. Requires Admin role."
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}"]
+            },
+            "description": "Get a specific user by their ID."
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"updated@example.com\",\n  \"role\": \"Customer\",\n  \"profile\": {\n    \"firstName\": \"Updated\",\n    \"lastName\": \"User\"\n  },\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}"]
+            },
+            "description": "Fully replace a user's data."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}"]
+            },
+            "description": "Soft-delete a user account."
+          }
+        },
+        {
+          "name": "Block User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Violation of terms of service\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}/block",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}", "block"]
+            },
+            "description": "Block a user account."
+          }
+        },
+        {
+          "name": "Unblock User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}/unblock",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}", "unblock"]
+            },
+            "description": "Unblock a previously blocked user account."
+          }
+        },
+        {
+          "name": "Change User Role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"Admin\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}", "role"]
+            },
+            "description": "Change the role of a user."
+          }
+        },
+        {
+          "name": "Restore User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{userId}}/restore",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{userId}}", "restore"]
+            },
+            "description": "Restore a soft-deleted user account."
+          }
+        }
+      ]
+    },
+    {
+      "name": "CMS",
+      "description": "Content management system endpoints for website content management.",
+      "item": [
+        {
+          "name": "CMS Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "status"]
+            },
+            "description": "Check CMS service status."
+          }
+        },
+        {
+          "name": "List Hero Content",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/hero",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "hero"]
+            },
+            "description": "List all hero section content items."
+          }
+        },
+        {
+          "name": "Get Hero By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/hero/{{heroId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "hero", "{{heroId}}"]
+            },
+            "description": "Get a specific hero content item by ID."
+          }
+        },
+        {
+          "name": "Create Hero Content",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"section\": \"hero\",\n  \"content\": {\n    \"title\": \"Welcome to Vertex Markets\",\n    \"subtitle\": \"Trade with Confidence\",\n    \"description\": \"Leading Forex broker offering competitive spreads and advanced trading tools.\",\n    \"ctaText\": \"Get Started\",\n    \"ctaLink\": \"/register\"\n  },\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/hero",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "hero"]
+            },
+            "description": "Create new hero section content."
+          }
+        },
+        {
+          "name": "Update Hero Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"section\": \"hero\",\n  \"content\": {\n    \"title\": \"Updated Title\",\n    \"subtitle\": \"Updated Subtitle\",\n    \"description\": \"Updated description text.\"\n  },\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/hero/{{heroId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "hero", "{{heroId}}"]
+            },
+            "description": "Fully replace hero section content."
+          }
+        },
+        {
+          "name": "Patch Hero Content",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": {\n    \"title\": \"Partially Updated Title\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/hero/{{heroId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "hero", "{{heroId}}"]
+            },
+            "description": "Partially update hero section content."
+          }
+        },
+        {
+          "name": "Delete Hero Content",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cms/hero/{{heroId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cms", "hero", "{{heroId}}"]
+            },
+            "description": "Delete hero section content."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Markets",
+      "description": "Trading markets management endpoints.",
+      "item": [
+        {
+          "name": "List Markets",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all markets with pagination."
+          }
+        },
+        {
+          "name": "Get Market By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets/{{marketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets", "{{marketId}}"]
+            },
+            "description": "Get a specific market by its ID."
+          }
+        },
+        {
+          "name": "Get Market By Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets/slug/forex",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets", "slug", "forex"]
+            },
+            "description": "Get a market by its URL-friendly slug."
+          }
+        },
+        {
+          "name": "Create Market",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Forex\",\n  \"slug\": \"forex\",\n  \"description\": \"Foreign exchange market - the world's largest financial market.\",\n  \"icon\": \"forex-icon.png\",\n  \"order\": 1,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets"]
+            },
+            "description": "Create a new market entry."
+          }
+        },
+        {
+          "name": "Update Market",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Forex (Updated)\",\n  \"slug\": \"forex\",\n  \"description\": \"Updated description.\",\n  \"icon\": \"forex-icon.png\",\n  \"order\": 1,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets/{{marketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets", "{{marketId}}"]
+            },
+            "description": "Fully replace a market."
+          }
+        },
+        {
+          "name": "Patch Market",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Partially updated description.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets/{{marketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets", "{{marketId}}"]
+            },
+            "description": "Partially update a market."
+          }
+        },
+        {
+          "name": "Delete Market",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/markets/{{marketId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "markets", "{{marketId}}"]
+            },
+            "description": "Delete a market."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Platforms",
+      "description": "Trading platforms management endpoints.",
+      "item": [
+        {
+          "name": "List Platforms",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all trading platforms."
+          }
+        },
+        {
+          "name": "Get Platform By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms/{{platformId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms", "{{platformId}}"]
+            },
+            "description": "Get a specific platform by ID."
+          }
+        },
+        {
+          "name": "Get Platform By Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms/slug/metatrader-4",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms", "slug", "metatrader-4"]
+            },
+            "description": "Get a platform by its slug."
+          }
+        },
+        {
+          "name": "Create Platform",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MetaTrader 4\",\n  \"slug\": \"metatrader-4\",\n  \"description\": \"Industry-standard trading platform for Forex and CFDs.\",\n  \"logo\": \"mt4-logo.png\",\n  \"features\": [\"Advanced Charting\", \"Automated Trading\", \"Custom Indicators\"],\n  \"supportedMarkets\": [\"Forex\", \"Commodities\", \"Indices\"],\n  \"order\": 1,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms"]
+            },
+            "description": "Create a new trading platform."
+          }
+        },
+        {
+          "name": "Update Platform",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MetaTrader 4 (Updated)\",\n  \"slug\": \"metatrader-4\",\n  \"description\": \"Updated description.\",\n  \"logo\": \"mt4-logo.png\",\n  \"features\": [\"Advanced Charting\"],\n  \"supportedMarkets\": [\"Forex\"],\n  \"order\": 1,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms/{{platformId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms", "{{platformId}}"]
+            },
+            "description": "Fully replace a platform."
+          }
+        },
+        {
+          "name": "Patch Platform",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Partially updated platform description.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms/{{platformId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms", "{{platformId}}"]
+            },
+            "description": "Partially update a platform."
+          }
+        },
+        {
+          "name": "Delete Platform",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/platforms/{{platformId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "platforms", "{{platformId}}"]
+            },
+            "description": "Delete a platform."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blog",
+      "description": "Blog posts management including categories and tags.",
+      "item": [
+        {
+          "name": "List Blog Posts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List published blog posts."
+          }
+        },
+        {
+          "name": "Get Blog Post By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "{{blogId}}"]
+            },
+            "description": "Get a specific blog post by ID."
+          }
+        },
+        {
+          "name": "Get Blog Post By Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/slug/understanding-forex-trading",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "slug", "understanding-forex-trading"]
+            },
+            "description": "Get a blog post by its slug."
+          }
+        },
+        {
+          "name": "Create Blog Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Understanding Forex Trading\",\n  \"slug\": \"understanding-forex-trading\",\n  \"excerpt\": \"A comprehensive guide to understanding the Forex market.\",\n  \"content\": \"Forex trading involves buying and selling currencies...\",\n  \"coverImage\": \"forex-guide.jpg\",\n  \"author\": \"John Doe\",\n  \"category\": \"cat_abc123\",\n  \"tags\": [\"forex\", \"beginners\", \"trading\"],\n  \"status\": \"published\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog"]
+            },
+            "description": "Create a new blog post."
+          }
+        },
+        {
+          "name": "Update Blog Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content...\",\n  \"status\": \"published\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "{{blogId}}"]
+            },
+            "description": "Fully replace a blog post."
+          }
+        },
+        {
+          "name": "Patch Blog Post",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Partially Updated Title\",\n  \"excerpt\": \"Updated excerpt.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "{{blogId}}"]
+            },
+            "description": "Partially update a blog post."
+          }
+        },
+        {
+          "name": "Delete Blog Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "{{blogId}}"]
+            },
+            "description": "Delete a blog post."
+          }
+        },
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "categories"]
+            },
+            "description": "List all blog categories."
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Forex Education\",\n  \"slug\": \"forex-education\",\n  \"description\": \"Educational content about Forex trading\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "categories"]
+            },
+            "description": "Create a new blog category."
+          }
+        },
+        {
+          "name": "List Tags",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "tags"]
+            },
+            "description": "List all blog tags."
+          }
+        },
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Beginners\",\n  \"slug\": \"beginners\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/blog/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "blog", "tags"]
+            },
+            "description": "Create a new blog tag."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "description": "Contact form submission and management.",
+      "item": [
+        {
+          "name": "Submit Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+1234567890\",\n  \"country\": \"United States\",\n  \"subject\": \"Account Inquiry\",\n  \"message\": \"I would like to know more about your premium trading accounts and the minimum deposit requirements.\",\n  \"department\": \"Support\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact"]
+            },
+            "description": "Submit a new contact inquiry."
+          }
+        },
+        {
+          "name": "Get Contact Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact/status/{{contactId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact", "status", "{{contactId}}"]
+            },
+            "description": "Public endpoint to check contact message status."
+          }
+        },
+        {
+          "name": "List Contacts (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all contact messages (admin)."
+          }
+        },
+        {
+          "name": "Get Contact By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact/{{contactId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact", "{{contactId}}"]
+            },
+            "description": "Get a specific contact message by ID."
+          }
+        },
+        {
+          "name": "Update Contact Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in_progress\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact/{{contactId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact", "{{contactId}}", "status"]
+            },
+            "description": "Update the status of a contact message."
+          }
+        },
+        {
+          "name": "Assign Contact",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignedTo\": \"user_xyz789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact/{{contactId}}/assign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact", "{{contactId}}", "assign"]
+            },
+            "description": "Assign a contact to a team member."
+          }
+        },
+        {
+          "name": "Reply to Contact",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"replyMessage\": \"Thank you for contacting us. A member of our team will get back to you within 24 hours.\",\n  \"fromEmail\": \"support@vertexmarkets.com\",\n  \"assignedTo\": \"user_xyz789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/contact/{{contactId}}/reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "contact", "{{contactId}}", "reply"]
+            },
+            "description": "Send a reply to a contact inquiry."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Newsletter",
+      "description": "Newsletter subscription management.",
+      "item": [
+        {
+          "name": "Subscribe",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"subscriber@example.com\",\n  \"fullName\": \"Jane Doe\",\n  \"source\": \"website\",\n  \"tags\": [\"forex\", \"newsletter\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/subscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "subscribe"]
+            },
+            "description": "Subscribe an email to the newsletter."
+          }
+        },
+        {
+          "name": "Unsubscribe",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"subscriber@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/unsubscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "unsubscribe"]
+            },
+            "description": "Unsubscribe an email from the newsletter."
+          }
+        },
+        {
+          "name": "Get Subscription Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/status/subscriber@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "status", "subscriber@example.com"]
+            },
+            "description": "Check subscription status by email."
+          }
+        },
+        {
+          "name": "List Subscribers (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all newsletter subscribers (admin)."
+          }
+        },
+        {
+          "name": "Get Subscriber By ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{newsletterId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{newsletterId}}"]
+            },
+            "description": "Get a specific subscriber by ID."
+          }
+        },
+        {
+          "name": "Update Subscriber Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"unsubscribed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{newsletterId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{newsletterId}}", "status"]
+            },
+            "description": "Update a subscriber's status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Careers",
+      "description": "Job listings and applications management.",
+      "item": [
+        {
+          "name": "List Jobs (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List open job positions."
+          }
+        },
+        {
+          "name": "Get Job By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/{{careerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "{{careerId}}"]
+            },
+            "description": "Get a specific job by ID."
+          }
+        },
+        {
+          "name": "Get Job By Slug",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/slug/senior-forex-trader",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "slug", "senior-forex-trader"]
+            },
+            "description": "Get a job by its slug."
+          }
+        },
+        {
+          "name": "Apply for Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Applicant\",\n  \"email\": \"john.applicant@example.com\",\n  \"phone\": \"+1234567890\",\n  \"coverLetter\": \"I am excited to apply for this position. I have 5 years of experience in Forex trading...\",\n  \"resumeUrl\": \"resume_abc123.pdf\",\n  \"linkedIn\": \"https://linkedin.com/in/johnapplicant\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/{{careerId}}/apply",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "{{careerId}}", "apply"]
+            },
+            "description": "Submit a job application."
+          }
+        },
+        {
+          "name": "Check Application Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/application/{{applicationId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "application", "{{applicationId}}", "status"]
+            },
+            "description": "Check the status of a submitted application."
+          }
+        },
+        {
+          "name": "Create Job (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Forex Trader\",\n  \"slug\": \"senior-forex-trader\",\n  \"department\": \"Trading\",\n  \"location\": \"London, UK\",\n  \"employmentType\": \"Full-time\",\n  \"experienceLevel\": \"Senior\",\n  \"description\": \"We are looking for an experienced Forex trader to join our team.\",\n  \"requirements\": [\"5+ years of trading experience\", \"CFA or equivalent preferred\"],\n  \"responsibilities\": [\"Manage client trading desks\", \"Analyze market trends\"],\n  \"salaryMin\": 80000,\n  \"salaryMax\": 120000,\n  \"currency\": \"GBP\",\n  \"featured\": true,\n  \"status\": \"open\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers"]
+            },
+            "description": "Create a new job position (admin)."
+          }
+        },
+        {
+          "name": "List All Jobs (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/admin/jobs?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "admin", "jobs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all jobs including closed and draft (admin)."
+          }
+        },
+        {
+          "name": "List All Applications (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/admin/applications?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "admin", "applications"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all job applications (admin)."
+          }
+        },
+        {
+          "name": "Update Application Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shortlisted\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/careers/admin/applications/{{applicationId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "careers", "admin", "applications", "{{applicationId}}", "status"]
+            },
+            "description": "Update application status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Partners",
+      "description": "Partner registrations and referrals.",
+      "item": [
+        {
+          "name": "Register Partner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Partner\",\n  \"companyName\": \"Partner Investments Ltd\",\n  \"email\": \"john@partnerinvestments.com\",\n  \"phone\": \"+1234567890\",\n  \"country\": \"United States\",\n  \"city\": \"New York\",\n  \"website\": \"https://partnerinvestments.com\",\n  \"partnerType\": \"Introducing Broker (IB)\",\n  \"experience\": \"10 years in Forex industry\",\n  \"monthlyClients\": \"50-100\",\n  \"businessDescription\": \"We provide brokerage services to retail clients.\",\n  \"referralSource\": \"Google\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners", "register"]
+            },
+            "description": "Submit a partner registration."
+          }
+        },
+        {
+          "name": "Submit Referral",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientName\": \"Jane Client\",\n  \"clientEmail\": \"jane@example.com\",\n  \"clientPhone\": \"+9876543210\",\n  \"country\": \"UK\",\n  \"tradingExperience\": \"3 years\",\n  \"estimatedDeposit\": \"$10,000 - $50,000\",\n  \"message\": \"Referred by partner John.\",\n  \"referredBy\": \"John Partner\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners/referral",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners", "referral"]
+            },
+            "description": "Submit a client referral."
+          }
+        },
+        {
+          "name": "Check Partner Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners/status/{{partnerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners", "status", "{{partnerId}}"]
+            },
+            "description": "Check partner registration status."
+          }
+        },
+        {
+          "name": "List Partners (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all partner registrations (admin)."
+          }
+        },
+        {
+          "name": "Update Partner Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/partners/{{partnerId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "partners", "{{partnerId}}", "status"]
+            },
+            "description": "Update partner approval status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Uploads",
+      "description": "File upload and management endpoints.",
+      "item": [
+        {
+          "name": "Upload Avatar",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/avatar.jpg" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/avatar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "avatar"]
+            },
+            "description": "Upload a user avatar image."
+          }
+        },
+        {
+          "name": "Upload Blog Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/blog-image.jpg" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/blog-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "blog-image"]
+            },
+            "description": "Upload a blog post image."
+          }
+        },
+        {
+          "name": "Upload CMS Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/cms-image.jpg" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/cms-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "cms-image"]
+            },
+            "description": "Upload a CMS image."
+          }
+        },
+        {
+          "name": "Upload Platform Image",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/platform-logo.jpg" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/platform-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "platform-image"]
+            },
+            "description": "Upload a trading platform image."
+          }
+        },
+        {
+          "name": "Upload Market Icon",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/market-icon.png" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/market-icon",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "market-icon"]
+            },
+            "description": "Upload a market icon."
+          }
+        },
+        {
+          "name": "Upload Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/resume.pdf" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/resume",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "resume"]
+            },
+            "description": "Upload a resume file (PDF/DOCX)."
+          }
+        },
+        {
+          "name": "Upload Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/document.pdf" }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/document",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "document"]
+            },
+            "description": "Upload a general document."
+          }
+        },
+        {
+          "name": "List Uploaded Files (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "List all uploaded files (admin)."
+          }
+        },
+        {
+          "name": "Serve File By Filename",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/file/abc123.jpg",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "file", "abc123.jpg"]
+            },
+            "description": "Serve a file by its filename."
+          }
+        },
+        {
+          "name": "Get File Metadata By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/uploads/{{fileId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "uploads", "{{fileId}}"]
+            },
+            "description": "Get file metadata by its ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Admin dashboard and system health endpoints.",
+      "item": [
+        {
+          "name": "Get Full Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard"]
+            },
+            "description": "Get full dashboard data including statistics, cards, and recent activity."
+          }
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/statistics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard", "statistics"]
+            },
+            "description": "Get aggregated statistics from all modules."
+          }
+        },
+        {
+          "name": "Get Recent Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/recent?type=users&limit=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard", "recent"],
+              "query": [
+                { "key": "type", "value": "users" },
+                { "key": "limit", "value": "5" }
+              ]
+            },
+            "description": "Get recent items by type."
+          }
+        },
+        {
+          "name": "Get System Health",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/system",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard", "system"]
+            },
+            "description": "Get system health information."
+          }
+        },
+        {
+          "name": "Get Activity Feed",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/dashboard/activity?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "dashboard", "activity"],
+              "query": [
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "description": "Get aggregated activity feed."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "description": "Global and module-specific search endpoints.",
+      "item": [
+        {
+          "name": "Global Search",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/search?q=forex",
+              "host": ["{{baseUrl}}"],
+              "path": ["search"],
+              "query": [
+                { "key": "q", "value": "forex" }
+              ]
+            },
+            "description": "Search across all modules."
+          }
+        },
+        {
+          "name": "Module Search",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/search/markets?q=forex",
+              "host": ["{{baseUrl}}"],
+              "path": ["search", "markets"],
+              "query": [
+                { "key": "q", "value": "forex" }
+              ]
+            },
+            "description": "Search within a specific module."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "description": "Health check endpoints.",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Basic health check endpoint."
+          }
+        }
+      ]
+    }
+  ]
+}
+

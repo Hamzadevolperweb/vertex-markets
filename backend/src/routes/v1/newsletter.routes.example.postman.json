@@ -1,0 +1,204 @@
+{
+  "info": {
+    "name": "Vertex Markets - Newsletter Module",
+    "description": "Collection for Phase 8 - Newsletter Module APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public APIs",
+      "item": [
+        {
+          "name": "POST /api/v1/newsletter/subscribe",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"fullName\": \"John Doe\",\n  \"source\": \"website\",\n  \"tags\": [\"marketing\", \"weekly\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/subscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "subscribe"]
+            },
+            "description": "Subscribe a new email to the newsletter. If the email already exists and is active, returns the existing subscription (idempotent)."
+          }
+        },
+        {
+          "name": "POST /api/v1/newsletter/unsubscribe",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/unsubscribe",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "unsubscribe"]
+            },
+            "description": "Unsubscribe an email from the newsletter."
+          }
+        },
+        {
+          "name": "GET /api/v1/newsletter/status/:email",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/status/john.doe@example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "status", "john.doe@example.com"]
+            },
+            "description": "Get the subscription status for a given email address."
+          }
+        }
+      ],
+      "description": "Public endpoints for newsletter subscription management."
+    },
+    {
+      "name": "Admin APIs",
+      "item": [
+        {
+          "name": "GET /api/v1/newsletter",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "sortBy", "value": "createdAt" },
+                { "key": "sortOrder", "value": "desc" },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "active", "value": "", "disabled": true },
+                { "key": "source", "value": "", "disabled": true },
+                { "key": "q", "value": "", "disabled": true }
+              ]
+            },
+            "description": "List all newsletter subscribers with pagination, sorting, and filtering."
+          }
+        },
+        {
+          "name": "GET /api/v1/newsletter/:id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{subscriberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{subscriberId}}"]
+            },
+            "description": "Get a specific subscriber by ID."
+          }
+        },
+        {
+          "name": "PUT /api/v1/newsletter/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"updated.email@example.com\",\n  \"fullName\": \"Updated Name\",\n  \"source\": \"import\",\n  \"tags\": [\"updated\", \"premium\"],\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{subscriberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{subscriberId}}"]
+            },
+            "description": "Fully replace a subscriber entry."
+          }
+        },
+        {
+          "name": "PATCH /api/v1/newsletter/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Patched Name\",\n  \"tags\": [\"patched\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{subscriberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{subscriberId}}"]
+            },
+            "description": "Partially update a subscriber entry."
+          }
+        },
+        {
+          "name": "PATCH /api/v1/newsletter/:id/status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"unsubscribed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{subscriberId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{subscriberId}}", "status"]
+            },
+            "description": "Update the subscription status (subscribed/unsubscribed)."
+          }
+        },
+        {
+          "name": "DELETE /api/v1/newsletter/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/newsletter/{{subscriberId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "newsletter", "{{subscriberId}}"]
+            },
+            "description": "Soft-delete a subscriber entry."
+          }
+        }
+      ],
+      "description": "Admin endpoints for newsletter management. Requires JWT authentication and newsletter:write permission."
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "subscriberId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
+

@@ -1,0 +1,257 @@
+{
+  "info": {
+    "name": "Vertex Markets API - Contact Module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public - Create Contact",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"phone\": \"+15551234567\",\n  \"country\": \"United States\",\n  \"subject\": \"Account opening question\",\n  \"message\": \"I would like to know the documents required to open a trading account.\",\n  \"department\": \"Support\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Public - Get Contact Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/status/{{contactId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "status", "{{contactId}}"]
+        }
+      }
+    },
+    {
+      "name": "Admin - List Contacts",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "sortBy", "value": "createdAt" },
+            { "key": "sortOrder", "value": "desc" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Admin - Get Contact by Id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}"]
+        }
+      }
+    },
+    {
+      "name": "Admin - Replace Contact",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane.doe@example.com\",\n  \"phone\": \"+15551234567\",\n  \"country\": \"United States\",\n  \"subject\": \"Updated subject\",\n  \"message\": \"Updated message content for the contact record.\",\n  \"department\": \"Sales\",\n  \"active\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin - Patch Contact",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"department\": \"Billing\",\n  \"active\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin - Delete Contact (soft)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}"]
+        }
+      }
+    },
+    {
+      "name": "Admin - Update Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}", "status"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"in_progress\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin - Assign Contact",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}/assign",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}", "assign"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"assignedTo\": \"agent_001\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Admin - Reply to Contact",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/contact/{{contactId}}/reply",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "contact", "{{contactId}}", "reply"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"replyMessage\": \"Thank you for reaching out. Here are the documents required to open an account.\",\n  \"fromEmail\": \"support@vertexmarkets.com\",\n  \"assignedTo\": \"agent_001\"\n}"
+        }
+      }
+    }
+  ]
+}

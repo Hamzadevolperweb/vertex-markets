@@ -1,0 +1,252 @@
+{
+  "info": {
+    "name": "Vertex Markets - Uploads Module",
+    "description": "Complete Uploads module endpoints for Vertex Markets API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Get File By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/{{upload_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "{{upload_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Serve File By fileName",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/file/{{file_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "file", "{{file_name}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Uploads",
+      "item": [
+        {
+          "name": "Upload Avatar",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/avatar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "avatar"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/avatar.jpg" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Blog Image",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/blog-image",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "blog-image"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/blog-image.jpg" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload CMS Image",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/cms-image",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "cms-image"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/cms-image.png" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Platform Image",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/platform-image",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "platform-image"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/platform-image.png" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Market Icon",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/market-icon",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "market-icon"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/market-icon.svg" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Resume",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/resume",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "resume"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/resume.pdf" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload Document",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/document",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "document"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "file", "type": "file", "src": "/path/to/document.pdf" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Files",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "sortBy", "value": "createdAt" },
+                { "key": "sortOrder", "value": "desc" },
+                { "key": "category", "value": "", "disabled": true },
+                { "key": "mimeType", "value": "", "disabled": true },
+                { "key": "active", "value": "", "disabled": true },
+                { "key": "q", "value": "", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get File Details By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/{{upload_id}}/details",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "{{upload_id}}", "details"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Patch File",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/{{upload_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "{{upload_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete File",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/uploads/{{upload_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "uploads", "{{upload_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

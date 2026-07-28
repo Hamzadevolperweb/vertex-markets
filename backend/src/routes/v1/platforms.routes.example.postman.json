@@ -1,0 +1,114 @@
+{
+  "info": {
+    "name": "Vertex Markets API - Platforms",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public - List platforms",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/platforms?page=1&limit=20&sortBy=order&sortOrder=asc&active=true&q=",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "platforms"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Public - Get platform by id",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/platforms/{{id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "platforms",
+            "{{id}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Public - Get platform by slug",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/platforms/slug/{{slug}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "platforms",
+            "slug",
+            "{{slug}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Admin - Create platform",
+      "request": {
+        "method": "POST",
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/platforms",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "platforms"
+          ]
+        },
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"MetaTrader 5\",\n  \"slug\": \"mt5\",\n  \"shortDescription\": \"Trade on MT5\",\n  \"description\": \"MetaTrader 5 platform\",\n  \"icon\": \"https://example.com/icon.png\",\n  \"image\": \"https://example.com/image.png\",\n  \"features\": [\"Indicators\", \"EAs\"],\n  \"supportedMarkets\": [\"Forex\", \"Crypto\"],\n  \"downloadLinks\": {\n    \"windows\": \"https://example.com/mt5/windows\",\n    \"mac\": \"https://example.com/mt5/mac\"\n  },\n  \"version\": \"5.0\",\n  \"order\": 1,\n  \"active\": true,\n  \"seo\": {\n    \"metaTitle\": \"MT5\",\n    \"metaDescription\": \"MetaTrader 5\"\n  }\n}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "id",
+      "value": ""
+    },
+    {
+      "key": "slug",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    }
+  ]
+}
+

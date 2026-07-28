@@ -50,6 +50,8 @@ import { ADMIN_NAV, type AdminPageId } from './admin/adminTypes';
 
 interface AdminDashboardProps {
   onLogout: () => void;
+  activePage?: AdminPageId;
+  onNavigate?: (page: AdminPageId) => void;
 }
 
 const NAV_ICONS: Record<AdminPageId, ComponentType<{ className?: string }>> = {
@@ -414,10 +416,15 @@ function LiveTradesFeed({ onViewAll }: { onViewAll: () => void }) {
   );
 }
 
-export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
+export default function AdminDashboard({
+  onLogout,
+  activePage: controlledPage,
+  onNavigate: controlledNavigate,
+}: AdminDashboardProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activePage, setActivePage] = useState<AdminPageId>('dashboard');
+  const [internalPage, setInternalPage] = useState<AdminPageId>('dashboard');
+  const activePage = controlledPage ?? internalPage;
   const [activeTimeframe, setActiveTimeframe] = useState<'1D' | '7D' | '30D' | '90D' | '1Y'>('30D');
   const [activeLang, setActiveLang] = useState('English');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
@@ -427,7 +434,11 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
   const [hoveredChart, setHoveredChart] = useState(false);
 
   const navigateTo = (page: AdminPageId) => {
-    setActivePage(page);
+    if (controlledNavigate) {
+      controlledNavigate(page);
+    } else {
+      setInternalPage(page);
+    }
     setIsMobileMenuOpen(false);
     setShowQuickActions(false);
     setShowProfileDropdown(false);

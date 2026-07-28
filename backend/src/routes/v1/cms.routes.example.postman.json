@@ -1,0 +1,66 @@
+{
+  "info": {
+    "name": "Vertex Markets API - CMS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public - Get Hero",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/cms/hero",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "cms",
+            "hero"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Admin - Create Hero",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/cms/hero",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "v1",
+            "cms",
+            "hero"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": {\n    \"title\": \"Welcome\",\n    \"subtitle\": \"Trade with confidence\"\n  }\n}"
+        }
+      }
+    }
+  ]
+}
+

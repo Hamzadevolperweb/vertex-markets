@@ -1,0 +1,289 @@
+{
+  "info": {
+    "name": "Vertex Markets - Partners Module",
+    "description": "Complete Partners module endpoints for Vertex Markets API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public",
+      "item": [
+        {
+          "name": "Register Partner",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "register"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"companyName\": \"Doe Trading LLC\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"country\": \"United States\",\n  \"city\": \"New York\",\n  \"website\": \"https://doetrading.com\",\n  \"partnerType\": \"Introducing Broker (IB)\",\n  \"experience\": \"5 years in Forex trading\",\n  \"monthlyClients\": \"10-20\",\n  \"businessDescription\": \"Introducing broker with a strong client base\",\n  \"referralSource\": \"Google Search\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Submit Referral",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/referral",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "referral"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clientName\": \"Jane Smith\",\n  \"clientEmail\": \"jane.smith@example.com\",\n  \"clientPhone\": \"+0987654321\",\n  \"country\": \"United Kingdom\",\n  \"tradingExperience\": \"Intermediate\",\n  \"estimatedDeposit\": \"$10,000 - $50,000\",\n  \"message\": \"Client interested in high-volume trading\",\n  \"referredBy\": \"partner_abc123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Check Partner Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/status/{{partner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "status", "{{partner_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Partners",
+      "item": [
+        {
+          "name": "List Partners",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "sortBy", "value": "createdAt" },
+                { "key": "sortOrder", "value": "desc" },
+                { "key": "q", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "partnerType", "value": "", "disabled": true },
+                { "key": "active", "value": "", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Partner By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Update Partner (PUT)",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"companyName\": \"Doe Trading LLC\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"country\": \"United States\",\n  \"city\": \"New York\",\n  \"website\": \"https://doetrading.com\",\n  \"partnerType\": \"Introducing Broker (IB)\",\n  \"experience\": \"5 years in Forex trading\",\n  \"monthlyClients\": \"10-20\",\n  \"businessDescription\": \"Updated description\",\n  \"referralSource\": \"Google Search\",\n  \"status\": \"approved\",\n  \"active\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Patch Partner (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe Patched\",\n  \"city\": \"Los Angeles\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Partner",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Update Partner Status",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}", "status"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"approved\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Assign Partner",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}/assign",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}", "assign"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignedTo\": \"admin_user_id\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Partner Notes",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/{{partner_id}}/notes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "{{partner_id}}", "notes"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"This partner has a strong track record. Follow up next week.\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Referrals",
+      "item": [
+        {
+          "name": "List Referrals",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/referrals?page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "referrals"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "sortBy", "value": "createdAt" },
+                { "key": "sortOrder", "value": "desc" },
+                { "key": "q", "value": "", "disabled": true },
+                { "key": "status", "value": "", "disabled": true },
+                { "key": "referredBy", "value": "", "disabled": true }
+              ]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Get Referral By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/referrals/{{referral_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "referrals", "{{referral_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        },
+        {
+          "name": "Update Referral Status",
+          "request": {
+            "method": "PATCH",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/referrals/{{referral_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "referrals", "{{referral_id}}", "status"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"qualified\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Referral",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/partners/referrals/{{referral_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "partners", "referrals", "{{referral_id}}"]
+            },
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+

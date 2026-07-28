@@ -36,8 +36,15 @@ interface WithdrawDashboardProps {
 
 export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDashboardProps) {
   // Available Balance state (matches the header top-right value)
-  const balanceValue = 12458.75;
+  const [balanceValue, setBalanceValue] = useState(0);
   const balanceCurrency = "USD";
+
+  useEffect(() => {
+    import('../api/trading')
+      .then(({ fetchTradingProfile }) => fetchTradingProfile())
+      .then((p) => setBalanceValue(p.wallet?.availableBalance || 0))
+      .catch(() => undefined);
+  }, []);
 
   // Navigation tabs state
   const [activeSidebarTab, setActiveSidebarTab] = useState<'Deposit' | 'Withdraw' | 'Transfer' | 'History' | 'Overview'>('Withdraw');
@@ -129,7 +136,7 @@ export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDash
     }
   };
 
-  const handleConfirmWithdrawal = () => {
+  const handleConfirmWithdrawal = async () => {
     if (numericAmount <= 0) {
       triggerToast("Please enter a valid withdrawal amount.");
       return;
@@ -146,10 +153,19 @@ export default function WithdrawDashboard({ onLogout, onNavigate }: WithdrawDash
     }
 
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
+    try {
+      const { createWithdrawal } = await import('../api/trading');
+      await createWithdrawal(numericAmount, {
+        otp: otpDigits.join(''),
+        method: withdrawMethod || 'bank',
+      }, withdrawMethod || 'bank');
       setShowSuccessModal(true);
-    }, 1800);
+      triggerToast('Withdrawal requested — pending admin approval.');
+    } catch (err: any) {
+      triggerToast(err.message || 'Withdrawal failed');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleResendCode = () => {

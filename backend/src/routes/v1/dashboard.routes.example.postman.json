@@ -1,0 +1,218 @@
+{
+  "info": {
+    "name": "Vertex Markets Backend - Dashboard",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET Dashboard (Full)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard?limit=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard"],
+          "query": [
+            { "key": "limit", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/statistics",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "statistics"]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent (All Types)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent Users",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?type=users&limit=10",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "type", "value": "users" },
+            { "key": "limit", "value": "10" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent Blog",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?type=blog&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "type", "value": "blog" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent Contacts",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?type=contacts&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "type", "value": "contacts" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent Applications",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?type=applications&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "type", "value": "applications" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent Partners",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?type=partners&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "type", "value": "partners" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Recent Uploads",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/recent?type=uploads&limit=5",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "recent"],
+          "query": [
+            { "key": "type", "value": "uploads" },
+            { "key": "limit", "value": "5" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard System Health",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/system",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "system"]
+        }
+      }
+    },
+    {
+      "name": "GET Dashboard Activity Feed",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{accessToken}}", "type": "text" }
+        ],
+        "url": {
+          "raw": "http://localhost:3000/api/v1/dashboard/activity?limit=20",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "v1", "dashboard", "activity"],
+          "query": [
+            { "key": "limit", "value": "20" }
+          ]
+        }
+      }
+    }
+  ]
+}
+

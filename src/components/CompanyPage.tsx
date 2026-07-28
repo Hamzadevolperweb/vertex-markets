@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import companyHqImg from '../assets/images/company_vunex_hq_1784520943215.jpg';
 import { 
@@ -29,27 +29,48 @@ import {
   Check
 } from 'lucide-react';
 
-interface CompanyPageProps {
-  onGetStartedClick: () => void;
-}
-
 // Interactive item details for the modal
-type ActiveTab = 
-  | 'story' 
-  | 'mission' 
-  | 'values' 
-  | 'leadership' 
-  | 'presence' 
-  | 'technology' 
-  | 'security' 
-  | 'compliance' 
-  | 'awards' 
-  | 'careers' 
+type ActiveTab =
+  | 'story'
+  | 'mission'
+  | 'values'
+  | 'leadership'
+  | 'presence'
+  | 'technology'
+  | 'security'
+  | 'compliance'
+  | 'awards'
+  | 'careers'
   | null;
 
-export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
-  const [activeTab, setActiveTab] = useState<ActiveTab>(null);
-  
+const COMPANY_SECTIONS = new Set<string>([
+  'story',
+  'mission',
+  'values',
+  'leadership',
+  'presence',
+  'technology',
+  'security',
+  'compliance',
+  'awards',
+  'careers',
+]);
+
+interface CompanyPageProps {
+  onGetStartedClick: () => void;
+  activeSection?: ActiveTab;
+  onSectionChange?: (section: ActiveTab) => void;
+}
+
+export default function CompanyPage({
+  onGetStartedClick,
+  activeSection = null,
+  onSectionChange,
+}: CompanyPageProps) {
+  const activeTab =
+    activeSection && COMPANY_SECTIONS.has(activeSection) ? activeSection : null;
+  const setActiveTab = (tab: ActiveTab) => onSectionChange?.(tab);
+
   // Custom job application form states
   const [appliedJob, setAppliedJob] = useState<string | null>(null);
   const [applicantName, setApplicantName] = useState('');
@@ -65,6 +86,12 @@ export default function CompanyPage({ onGetStartedClick }: CompanyPageProps) {
 
   // Selected city state for Global Presence Map
   const [selectedCity, setSelectedCity] = useState<'NY' | 'LDN' | 'TOK' | 'SGP' | 'DXB'>('LDN');
+
+  useEffect(() => {
+    if (!activeTab) {
+      setAppliedJob(null);
+    }
+  }, [activeTab]);
 
   const startSecurityAudit = () => {
     setIsAuditing(true);

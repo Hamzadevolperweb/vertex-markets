@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import vunexLogo from '../assets/images/cutouts/logo_official.png';
+import PriceChart from './charts/PriceChart';
+import { useLiveMarket } from '../hooks/useLiveMarket';
 import {
   Search,
   Plus,
@@ -108,6 +110,28 @@ export default function TradingTerminal({ onLogout, onNavigateToOverview }: Trad
   const [chartTimeframe, setChartTimeframe] = useState<string>('1h');
   const [drawingTool, setDrawingTool] = useState<string>('crosshair');
   const [isDrawingLocked, setIsDrawingLocked] = useState<boolean>(false);
+  const { candles: liveCandles, quote: liveQuote, status: chartStatus } = useLiveMarket(
+    selectedSymbol,
+    chartTimeframe,
+  );
+
+  useEffect(() => {
+    if (!liveQuote || liveQuote.error) return;
+    setTickers((prev) =>
+      prev.map((t) =>
+        t.symbol === liveQuote.symbol
+          ? {
+              ...t,
+              price: liveQuote.price || t.price,
+              change: liveQuote.change || t.change,
+              isUp: (liveQuote.change || 0) >= 0,
+              high: liveQuote.high || t.high,
+              low: liveQuote.low || t.low,
+            }
+          : t,
+      ),
+    );
+  }, [liveQuote]);
 
   // Account stats matching Image 5 header
   const [equity, setEquity] = useState<number>(125430.25);
@@ -863,165 +887,27 @@ export default function TradingTerminal({ onLogout, onNavigateToOverview }: Trad
               </button>
             </div>
 
-            {/* Core Canvas / SVG Candle Plotting (High Fidelity Rendering) */}
-            <div className="flex-grow relative h-full overflow-hidden flex flex-col justify-between">
-              
-              {/* Backgrid SVG Plotting */}
-              <div className="absolute inset-0 z-0">
-                <svg className="w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <pattern id="grid" width="40" height="30" patternUnits="userSpaceOnUse">
-                      <rect width="40" height="30" fill="none" />
-                      <path d="M 40 0 L 0 0 0 30" fill="none" stroke="white" strokeWidth="0.5" />
-                    </pattern>
-                  </defs>
-                  <rect width="100%" height="100%" fill="url(#grid)" />
-                </svg>
-              </div>
-
-              {/* Vector Candlesticks & Technical Lines Overlay */}
-              <div className="absolute inset-0 z-10 p-6 flex flex-col justify-between">
-                
-                {/* Simulated Chart Plot Lines */}
-                <svg className="w-full h-[80%] absolute inset-0 text-blue-500 select-none overflow-visible">
-                  
-                  {/* Neon Area gradient fill */}
-                  <defs>
-                    <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#1e60ff" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#1e60ff" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-
-                  {/* Financial Trend curve */}
-                  <path
-                    d="M 10 180 C 80 210, 150 110, 220 160 C 290 210, 360 80, 430 110 C 500 140, 570 60, 640 100"
-                    fill="url(#chartGlow)"
-                    stroke="#1e60ff"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    className="opacity-70"
-                  />
-
-                  {/* EMA Line (Purple trend) */}
-                  <path
-                    d="M 10 190 C 80 195, 150 140, 220 150 C 290 180, 360 110, 430 115 C 500 130, 570 90, 640 105"
-                    fill="none"
-                    stroke="#a855f7"
-                    strokeWidth="1.5"
-                    className="opacity-40"
-                  />
-
-                  {/* Candlesticks drawn relative to spots */}
-                  {/* Candlestick Group (Red/Green candles) */}
-                  <g className="opacity-90">
-                    {/* Candle 1 (Green) */}
-                    <line x1="40" y1="160" x2="40" y2="210" stroke="#10b981" strokeWidth="1.5" />
-                    <rect x="34" y="170" width="12" height="30" fill="#10b981" rx="1" />
-
-                    {/* Candle 2 (Green) */}
-                    <line x1="90" y1="140" x2="90" y2="190" stroke="#10b981" strokeWidth="1.5" />
-                    <rect x="84" y="150" width="12" height="25" fill="#10b981" rx="1" />
-
-                    {/* Candle 3 (Red) */}
-                    <line x1="140" y1="130" x2="140" y2="200" stroke="#ef4444" strokeWidth="1.5" />
-                    <rect x="134" y="145" width="12" height="40" fill="#ef4444" rx="1" />
-
-                    {/* Candle 4 (Green) */}
-                    <line x1="190" y1="90" x2="190" y2="160" stroke="#10b981" strokeWidth="1.5" />
-                    <rect x="184" y="105" width="12" height="45" fill="#10b981" rx="1" />
-
-                    {/* Candle 5 (Red) */}
-                    <line x1="240" y1="110" x2="240" y2="170" stroke="#ef4444" strokeWidth="1.5" />
-                    <rect x="234" y="125" width="12" height="30" fill="#ef4444" rx="1" />
-
-                    {/* Candle 6 (Red) */}
-                    <line x1="290" y1="150" x2="290" y2="220" stroke="#ef4444" strokeWidth="1.5" />
-                    <rect x="284" y="160" width="12" height="40" fill="#ef4444" rx="1" />
-
-                    {/* Candle 7 (Green) */}
-                    <line x1="340" y1="80" x2="340" y2="150" stroke="#10b981" strokeWidth="1.5" />
-                    <rect x="334" y="90" width="12" height="45" fill="#10b981" rx="1" />
-
-                    {/* Candle 8 (Green) */}
-                    <line x1="390" y1="60" x2="390" y2="120" stroke="#10b981" strokeWidth="1.5" />
-                    <rect x="384" y="70" width="12" height="35" fill="#10b981" rx="1" />
-
-                    {/* Candle 9 (Red) */}
-                    <line x1="440" y1="90" x2="440" y2="160" stroke="#ef4444" strokeWidth="1.5" />
-                    <rect x="434" y="100" width="12" height="40" fill="#ef4444" rx="1" />
-
-                    {/* Candle 10 (Green) */}
-                    <line x1="490" y1="50" x2="490" y2="120" stroke="#10b981" strokeWidth="1.5" />
-                    <rect x="484" y="60" width="12" height="45" fill="#10b981" rx="1" />
-
-                    {/* Candle 11 (Green - Live/Flashing Ticker) */}
-                    <line x1="540" y1="60" x2="540" y2="110" stroke={activeTicker.isUp ? '#10b981' : '#ef4444'} strokeWidth="1.5" />
-                    <rect x="534" y="70" width="12" height="25" fill={activeTicker.isUp ? '#10b981' : '#ef4444'} rx="1" />
-                  </g>
-
-                  {/* Horizontal dotted line at active spot price */}
-                  <line 
-                    x1="0" 
-                    y1="82" 
-                    x2="100%" 
-                    y2="82" 
-                    stroke={activeTicker.isUp ? '#10b981' : '#ef4444'} 
-                    strokeWidth="1" 
-                    strokeDasharray="4 3" 
-                    className="opacity-80"
-                  />
-                  
-                  {/* Glowing Price Label on the right axis */}
-                  <g transform="translate(565, 73)" className="select-none">
-                    <rect width="60" height="18" fill={activeTicker.isUp ? '#10b981' : '#ef4444'} rx="3" className="shadow-lg" />
-                    <text x="30" y="12" fill="white" fontSize="9" fontWeight="bold" fontFamily="monospace" textAnchor="middle">
-                      {activeTicker.price}
-                    </text>
-                  </g>
-                </svg>
-
-                {/* Floating info overlay */}
-                <div className="absolute top-4 left-6 z-10 flex flex-col text-left">
-                  <div className="flex items-center gap-2 text-[10.5px] text-gray-400 font-mono">
-                    <span className="font-bold text-white">{activeTicker.symbol}</span>
-                    <span>1h</span>
-                    <span>• Vunex Market</span>
-                    <span>O: <span className="text-gray-300">1.08892</span></span>
-                    <span>H: <span className="text-gray-300">1.08988</span></span>
-                    <span>L: <span className="text-gray-300">1.08821</span></span>
-                    <span>C: <span className="text-blue-400">{activeTicker.price}</span></span>
-                  </div>
+            {/* Core Canvas — TradingView Lightweight Charts */}
+            <div className="flex-grow relative h-full overflow-hidden">
+              {liveCandles.length > 0 ? (
+                <PriceChart candles={liveCandles} height={360} className="absolute inset-0" />
+              ) : (
+                <div className="h-full flex items-center justify-center text-xs text-gray-500">
+                  {chartStatus === 'loading' ? 'Loading live chart…' : 'Live chart unavailable'}
                 </div>
-              </div>
-
-              {/* Time scaling labels bottom of chart container (Image 5 matching) */}
-              <div className="h-7 bg-[#050507]/40 border-t border-white/[0.04] w-full flex items-center justify-between px-6 text-[10px] text-gray-500 font-mono z-10 shrink-0">
-                <div className="flex gap-14">
-                  <span>12:00</span>
-                  <span>13:00</span>
-                  <span>14:00</span>
-                  <span>15:00</span>
-                  <span>16:00</span>
-                  <span>17:00</span>
-                  <span>18:00</span>
-                  <span>19:00</span>
-                </div>
-                <span>UTC+0</span>
+              )}
+              <div className="absolute bottom-2 left-4 text-[9px] font-mono text-gray-500 uppercase tracking-wider z-20">
+                {activeTicker.symbol} · {chartTimeframe} · {chartStatus === 'live' ? 'Live' : chartStatus}
               </div>
             </div>
 
             {/* Right Y-Axis prices scale */}
             <div className="w-16 border-l border-white/[0.04] bg-[#050507]/20 flex flex-col justify-between py-6 items-center text-[9px] text-gray-500 font-mono shrink-0 select-none">
-              <span>1.09400</span>
-              <span>1.09200</span>
-              <span>1.09000</span>
-              <span className="text-blue-400 font-bold">1.08945</span>
-              <span>1.08800</span>
-              <span>1.08600</span>
-              <span>1.08400</span>
-              <span>1.08200</span>
-              <span>1.08000</span>
+              <span>{(activeTicker.price * 1.004).toFixed(5)}</span>
+              <span>{(activeTicker.price * 1.002).toFixed(5)}</span>
+              <span className="text-blue-400 font-bold">{activeTicker.price}</span>
+              <span>{(activeTicker.price * 0.998).toFixed(5)}</span>
+              <span>{(activeTicker.price * 0.996).toFixed(5)}</span>
             </div>
           </div>
 

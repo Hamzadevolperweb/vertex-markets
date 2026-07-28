@@ -1,0 +1,48 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+
+  api:
+    build: ../backend
+    restart: unless-stopped
+    env_file:
+      - ../backend/.env
+    environment:
+      NODE_ENV: production
+      COOKIE_SECURE: "true"
+      CORS_ORIGIN: https://${DOMAIN}
+      APP_PUBLIC_URL: https://${DOMAIN}
+      APP_FRONTEND_URL: https://${DOMAIN}
+    depends_on:
+      - mongo
+    expose:
+      - "3000"
+
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./certbot/www:/var/www/certbot:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ../dist:/usr/share/nginx/html:ro
+    depends_on:
+      - api
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h; done"
+
+volumes:
+  mongo_data:
